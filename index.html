@@ -3,16 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Запуск T-Банк</title>
+  <title>Запуск T-Банк и Сбер</title>
   <style>
-    body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
-    .btn { border: none; background: none; cursor: pointer; }
-    .btn img { max-width: 80%; height: auto; }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+    }
+    .btn {
+      border: none;
+      background: none;
+      cursor: pointer;
+      margin: 0 10px; /* небольшой отступ между кнопками */
+    }
+    .btn img {
+      max-width: 100px; /* можно подкорректировать размер иконок */
+      height: auto;
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <!-- Кнопка запуска T-Банка -->
   <button class="btn" onclick="window.location.href='bank100000000004://qr.nspk.ru/'">
     <img src="tbank-logo.png" alt="T-Банк">
   </button>
+
+  <!-- Кнопка запуска Сбера -->
+  <button class="btn" onclick="window.location.href='bank100000000111://qr.nspk.ru/'">
+    <img src="sber-logo.png" alt="Сбер">
+  </button>
 </body>
 </html>
+

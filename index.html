@@ -1,98 +1,65 @@
-<!DOCTYPE html> <!-- Определяем тип документа как HTML5 -->
-<html lang="ru"> <!-- Указываем язык страницы — русский -->
-<head> <!-- Начало секции метаданных -->
-  <meta charset="UTF-8"> <!-- Устанавливаем кодировку символов UTF-8 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивный viewport для мобильных -->
-  <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок страницы в браузерной вкладке -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">                      <!-- Кодировка UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивность -->
+  <title>Выберите Ваш банк для оплаты</title>
   <style>
-    html, body {                      /* Сбрасываем отступы у html и body */
+    html, body {
       margin: 0;
       padding: 0;
-      height: 100%;                  /* Заставляем body занимать всю высоту экрана */
+      height: 100%;
     }
-    body {                            /* Оформляем фон и центрирование контента */
-      display: flex;                 /* Включаем flex-контейнер */
-      flex-direction: column;        /* Располагаем кнопки вертикально */
-      justify-content: center;       /* Центрируем по вертикали */
-      align-items: center;           /* Центрируем по горизонтали */
-      background: #f5f5f5;           /* Лёгкий серый фон */
+    body {
+      display: flex;
+      flex-direction: column;  /* Стекаем кнопки по вертикали */
+      justify-content: center; /* Центрируем по вертикали */
+      align-items: center;     /* Центрируем по горизонтали */
+      background: #f5f5f5;
     }
-    .btn {                            /* Общие стили для всех кнопок */
-      border: none;                  /* Убираем стандартную границу */
-      background: none;              /* Без фонового цвета */
-      cursor: pointer;               /* Показываем «руку» при наведении */
-      width: 90%;                    /* Ширина — 90% от родителя (body) */
-      max-width: 400px;              /* Максимальная ширина — 400px */
-      margin: 10px 0;                /* Отступы сверху/снизу между кнопками */
+    .btn {
+      border: none;
+      background: none;
+      cursor: pointer;
+      width: 90%;
+      max-width: 400px;
+      margin: 10px 0;
     }
-    .btn img {                        /* Стили для изображения внутри кнопки */
-      width: 100%;                   /* Растягиваем картинку по ширине кнопки */
-      height: auto;                  /* Автоматически рассчитываем высоту по пропорциям */
-      display: block;                /* Убираем возможные отступы снизу */
+    .btn img {
+      width: 100%;
+      height: auto;
+      display: block;
     }
   </style>
 </head>
-<body> <!-- Начало видимой части страницы -->
+<body>
 
-  <!-- Кнопка запуска T-Банка — сохраняет поведение на Android и сразу закрывает страницу -->
-  <button
-    class="btn"
-    onclick="
-      window.location.href='tbank://main';      /* Переходим по deeplink */
-      setTimeout(function(){ window.close(); }, 300); /* Закрываем окно через 300 мс */
-    ">
-    <img src="tbank-logo.png" alt="T-Банк">       <!-- Логотип T-Банка -->
+  <button class="btn" onclick="window.location.href='tbank://main'">
+    <img src="tbank-logo.png" alt="T-Банк">
   </button>
 
-  <!-- Кнопка запуска Сбера — аналогично Android, для iOS будет перехвачена скриптом -->
-  <button
-    class="btn"
-    onclick="
-      window.location.href='https://www.sberbank.com/sms/pbpn?requisiteNumber=79309791051';
-      setTimeout(function(){ window.close(); }, 300);
-    ">
-    <img src="sber-logo.png" alt="Сбер">          <!-- Логотип Сбера -->
+  <button class="btn" onclick="window.location.href='sberbankidlogin://sberbankidsso'">
+    <img src="sber-logo.png" alt="Сбер">
   </button>
 
-  <!-- Кнопка запуска ВТБ — HTTP-ссылка превращается в deeplink, затем закроем -->
-  <button
-    class="btn"
-    onclick="
-      window.location.href='https://online.vtb.ru/i/';
-      setTimeout(function(){ window.close(); }, 300);
-    ">
-    <img src="vtb-logo.png" alt="ВТБ">             <!-- Логотип ВТБ -->
+  <button class="btn" onclick="window.location.href='https://online.vtb.ru/i/'">
+    <img src="vtb-logo.png" alt="ВТБ">
   </button>
 
-  <!-- Скрипт для определения ОС и переопределения поведения на iOS -->
   <script>
-    // Берём строку User-Agent от браузера
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    // Ждём полной загрузки страницы
+    window.addEventListener('load', function() {
+      // Устанавливаем таймаут на 5 секунд (5000 мс)
+      setTimeout(function() {
+        // 1) Пытаемся безопасно закрыть окно методом JS
+        window.close();
 
-    // Проверка на Android
-    function isAndroid() {
-      return /android/i.test(ua);    /* Ищем 'Android' без учёта регистра */
-    }
+        // 2) Если закрыть не получилось (встроенный браузер это блокирует) —
+        //    пробуем открыть схему tg://, чтобы Telegram вернул фокус и закрыл WebView.
+        //    Как правило, встроенный браузер переключится обратно в чат.
+        window.location.href = 'tg://';
 
-    // Проверка на iOS (iPhone, iPad, iPod)
-    function isIOS() {
-      return (/iPad|iPhone|iPod/.test(ua) && !window.MSStream);
-    }
-
-    // Выполняем после того, как DOM полностью загружен
-    window.addEventListener('DOMContentLoaded', function() {
-      if (isIOS()) {                 /* Если iOS */
-        // Находим все кнопки
-        const buttons = document.querySelectorAll('.btn');
-        buttons.forEach(function(btn) {
-          btn.addEventListener('click', function(event) {
-            event.preventDefault();      /* Отменяем стандартное действие кнопки */
-            alert('Вы зашли с Айфона'); /* Показ встроенного alert с кнопкой ОК */
-            window.close();              /* Закрываем окно сразу после закрытия alert */
-          });
-        });
-      }
-      // Для Android и других ОС — оставляем встроенные onclick, которые и навигацию, и закрытие обрабатывают.
+      }, 5000);
     });
   </script>
 

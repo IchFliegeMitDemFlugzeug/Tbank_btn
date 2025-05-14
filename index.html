@@ -1,89 +1,100 @@
 <!DOCTYPE html> <!-- Определяем тип документа как HTML5 -->
-<html lang="ru"> <!-- Открываем HTML-документ и указываем, что язык страницы — русский -->
-<head> <!-- Начало секции с метаданными страницы -->
-  <meta charset="UTF-8"> <!-- Указываем кодировку символов UTF-8 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Задаём вьюпорт для адаптивности на мобильных -->
-  <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок вкладки браузера -->
+<html lang="ru"> <!-- Указываем язык страницы — русский -->
+<head> <!-- Начало секции метаданных -->
+  <meta charset="UTF-8"> <!-- Устанавливаем кодировку символов UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивный viewport для мобильных -->
+  <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок страницы в браузерной вкладке -->
   <style>
-    html, body { /* Сбрасываем отступы для html и body */
-      margin: 0; 
-      padding: 0; 
-      height: 100%; 
+    html, body {                      /* Сбрасываем отступы у html и body */
+      margin: 0;
+      padding: 0;
+      height: 100%;                  /* Заставляем body занимать всю высоту экрана */
     }
-    body { /* Делаем body flex-контейнером для центрирования контента */
-      display: flex;
-      flex-direction: column;         /* Располагаем кнопки по вертикали */
-      justify-content: center;        /* Вертикальное центрирование */
-      align-items: center;            /* Горизонтальное центрирование */
-      background: #f5f5f5;            /* Светло-серый фон */
+    body {                            /* Оформляем фон и центрирование контента */
+      display: flex;                 /* Включаем flex-контейнер */
+      flex-direction: column;        /* Располагаем кнопки вертикально */
+      justify-content: center;       /* Центрируем по вертикали */
+      align-items: center;           /* Центрируем по горизонтали */
+      background: #f5f5f5;           /* Лёгкий серый фон */
     }
-    .btn { /* Стили для кнопок */
-      border: none;                   /* Убираем рамку */
-      background: none;               /* Убираем фон */
-      cursor: pointer;                /* Курсор «рука» при наведении */
-      width: 90%;                     /* Ширина 90% от экрана */
-      max-width: 400px;               /* Но не больше 400px */
-      margin: 10px 0;                 /* Отступы сверху и снизу между кнопками */
+    .btn {                            /* Общие стили для всех кнопок */
+      border: none;                  /* Убираем стандартную границу */
+      background: none;              /* Без фонового цвета */
+      cursor: pointer;               /* Показываем «руку» при наведении */
+      width: 90%;                    /* Ширина — 90% от родителя (body) */
+      max-width: 400px;              /* Максимальная ширина — 400px */
+      margin: 10px 0;                /* Отступы сверху/снизу между кнопками */
     }
-    .btn img { /* Стили для изображений внутри кнопок */
-      width: 100%;                    /* Картинка растягивается по ширине кнопки */
-      height: auto;                   /* Высота сохраняет пропорции */
-      display: block;                 /* Убираем лишние отступы под изображением */
+    .btn img {                        /* Стили для изображения внутри кнопки */
+      width: 100%;                   /* Растягиваем картинку по ширине кнопки */
+      height: auto;                  /* Автоматически рассчитываем высоту по пропорциям */
+      display: block;                /* Убираем возможные отступы снизу */
     }
   </style>
 </head>
-<body> <!-- Начало тела документа -->
-  <!-- Кнопка запуска T-Банка -->
-  <button class="btn" onclick="window.location.href='tbank://main'">
-    <img src="tbank-logo.png" alt="T-Банк">
+<body> <!-- Начало видимой части страницы -->
+
+  <!-- Кнопка запуска T-Банка — сохраняет поведение на Android и сразу закрывает страницу -->
+  <button
+    class="btn"
+    onclick="
+      window.location.href='tbank://main';      /* Переходим по deeplink */
+      setTimeout(function(){ window.close(); }, 300); /* Закрываем окно через 300 мс */
+    ">
+    <img src="tbank-logo.png" alt="T-Банк">       <!-- Логотип T-Банка -->
   </button>
 
-  <!-- Кнопка запуска Сбера -->
-  /* '"sberbankidlogin://sberbankidsso'" */
-  <button class="btn" onclick="window.location.href='https://www.sberbank.com/sms/pbpn?requisiteNumber=79309791051'">
-    <img src="sber-logo.png" alt="Сбер">
+  <!-- Кнопка запуска Сбера — аналогично Android, для iOS будет перехвачена скриптом -->
+  <button
+    class="btn"
+    onclick="
+      window.location.href='https://www.sberbank.com/sms/pbpn?requisiteNumber=79309791051';
+      setTimeout(function(){ window.close(); }, 300);
+    ">
+    <img src="sber-logo.png" alt="Сбер">          <!-- Логотип Сбера -->
   </button>
 
-  <!-- Кнопка запуска ВТБ -->
-  <button class="btn" onclick="window.location.href='https://online.vtb.ru/i/'">
-    <img src="vtb-logo.png" alt="ВТБ">
+  <!-- Кнопка запуска ВТБ — HTTP-ссылка превращается в deeplink, затем закроем -->
+  <button
+    class="btn"
+    onclick="
+      window.location.href='https://online.vtb.ru/i/';
+      setTimeout(function(){ window.close(); }, 300);
+    ">
+    <img src="vtb-logo.png" alt="ВТБ">             <!-- Логотип ВТБ -->
   </button>
 
-  <!-- Скрипт для определения ОС и настройки поведения кнопок -->
+  <!-- Скрипт для определения ОС и переопределения поведения на iOS -->
   <script>
-    // Получаем строку User-Agent из браузера, чтобы понять, на какой платформе открыт сайт
+    // Берём строку User-Agent от браузера
     const ua = navigator.userAgent || navigator.vendor || window.opera;
 
-    // Функция для проверки, что это Android-устройство
+    // Проверка на Android
     function isAndroid() {
-      return /android/i.test(ua); // Ищем подстроку "Android" без учёта регистра
+      return /android/i.test(ua);    /* Ищем 'Android' без учёта регистра */
     }
 
-    // Функция для проверки, что это iOS-устройство (iPhone, iPad или iPod)
+    // Проверка на iOS (iPhone, iPad, iPod)
     function isIOS() {
-      // Ищем в UA "iPhone", "iPad" или "iPod" и исключаем старые Windows-устройства
       return (/iPad|iPhone|iPod/.test(ua) && !window.MSStream);
     }
 
-    // Ждём полной загрузки DOM, прежде чем вешать слушатели
+    // Выполняем после того, как DOM полностью загружен
     window.addEventListener('DOMContentLoaded', function() {
-      // Если устройство — iOS
-      if (isIOS()) {
-        // Находим все элементы-кнопки с классом .btn
-        var buttons = document.querySelectorAll('.btn');
-
-        // Для каждой кнопки...
+      if (isIOS()) {                 /* Если iOS */
+        // Находим все кнопки
+        const buttons = document.querySelectorAll('.btn');
         buttons.forEach(function(btn) {
-          // При клике на кнопку...
           btn.addEventListener('click', function(event) {
-            event.preventDefault();              // Отменяем переход по ссылке
-            alert('Вы зашли с Айфона');         // Показываем встроенное уведомление с кнопкой ОК
+            event.preventDefault();      /* Отменяем стандартное действие кнопки */
+            alert('Вы зашли с Айфона'); /* Показ встроенного alert с кнопкой ОК */
+            window.close();              /* Закрываем окно сразу после закрытия alert */
           });
         });
       }
-      // Если устройство — Android или другое, никаких изменений не требуется:
-      // кнопки сохранят своё стандартное поведение.
+      // Для Android и других ОС — оставляем встроенные onclick, которые и навигацию, и закрытие обрабатывают.
     });
   </script>
+
 </body>
 </html>

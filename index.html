@@ -1,38 +1,38 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Выберите Ваш банк для оплаты</title>
+<!DOCTYPE html> <!-- Определяем тип документа как HTML5 -->
+<html lang="ru"> <!-- Открываем HTML-документ и указываем, что язык страницы — русский -->
+<head> <!-- Начало секции с метаданными страницы -->
+  <meta charset="UTF-8"> <!-- Указываем кодировку символов UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Задаём вьюпорт для адаптивности на мобильных -->
+  <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок вкладки браузера -->
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
+    html, body { /* Сбрасываем отступы для html и body */
+      margin: 0; 
+      padding: 0; 
+      height: 100%; 
     }
-    body {
+    body { /* Делаем body flex-контейнером для центрирования контента */
       display: flex;
-      flex-direction: column;         /* Стек по вертикали */
-      justify-content: center;
-      align-items: center;
-      background: #f5f5f5;
+      flex-direction: column;         /* Располагаем кнопки по вертикали */
+      justify-content: center;        /* Вертикальное центрирование */
+      align-items: center;            /* Горизонтальное центрирование */
+      background: #f5f5f5;            /* Светло-серый фон */
     }
-    .btn {
-      border: none;
-      background: none;
-      cursor: pointer;
-      width: 90%;                     /* Занимает 90% ширины экрана */
-      max-width: 400px;               /* Но не шире 400px */
-      margin: 10px 0;                 /* Отступы сверху-снизу между кнопками */
+    .btn { /* Стили для кнопок */
+      border: none;                   /* Убираем рамку */
+      background: none;               /* Убираем фон */
+      cursor: pointer;                /* Курсор «рука» при наведении */
+      width: 90%;                     /* Ширина 90% от экрана */
+      max-width: 400px;               /* Но не больше 400px */
+      margin: 10px 0;                 /* Отступы сверху и снизу между кнопками */
     }
-    .btn img {
+    .btn img { /* Стили для изображений внутри кнопок */
       width: 100%;                    /* Картинка растягивается по ширине кнопки */
-      height: auto;
-      display: block;
+      height: auto;                   /* Высота сохраняет пропорции */
+      display: block;                 /* Убираем лишние отступы под изображением */
     }
   </style>
 </head>
-<body>
+<body> <!-- Начало тела документа -->
   <!-- Кнопка запуска T-Банка -->
   <button class="btn" onclick="window.location.href='tbank://main'">
     <img src="tbank-logo.png" alt="T-Банк">
@@ -43,9 +43,46 @@
     <img src="sber-logo.png" alt="Сбер">
   </button>
 
-    <!-- Кнопка запуска ВТБ -->
+  <!-- Кнопка запуска ВТБ -->
   <button class="btn" onclick="window.location.href='https://online.vtb.ru/i/'">
     <img src="vtb-logo.png" alt="ВТБ">
   </button>
+
+  <!-- Скрипт для определения ОС и настройки поведения кнопок -->
+  <script>
+    // Получаем строку User-Agent из браузера, чтобы понять, на какой платформе открыт сайт
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+    // Функция для проверки, что это Android-устройство
+    function isAndroid() {
+      return /android/i.test(ua); // Ищем подстроку "Android" без учёта регистра
+    }
+
+    // Функция для проверки, что это iOS-устройство (iPhone, iPad или iPod)
+    function isIOS() {
+      // Ищем в UA "iPhone", "iPad" или "iPod" и исключаем старые Windows-устройства
+      return (/iPad|iPhone|iPod/.test(ua) && !window.MSStream);
+    }
+
+    // Ждём полной загрузки DOM, прежде чем вешать слушатели
+    window.addEventListener('DOMContentLoaded', function() {
+      // Если устройство — iOS
+      if (isIOS()) {
+        // Находим все элементы-кнопки с классом .btn
+        var buttons = document.querySelectorAll('.btn');
+
+        // Для каждой кнопки...
+        buttons.forEach(function(btn) {
+          // При клике на кнопку...
+          btn.addEventListener('click', function(event) {
+            event.preventDefault();              // Отменяем переход по ссылке
+            alert('Вы зашли с Айфона');         // Показываем встроенное уведомление с кнопкой ОК
+          });
+        });
+      }
+      // Если устройство — Android или другое, никаких изменений не требуется:
+      // кнопки сохранят своё стандартное поведение.
+    });
+  </script>
 </body>
 </html>

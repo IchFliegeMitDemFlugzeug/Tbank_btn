@@ -1,66 +1,181 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru"> <!-- Объявляем язык страницы — русский -->
 <head>
-  <meta charset="UTF-8">                      <!-- Кодировка UTF-8 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивность -->
-  <title>Выберите Ваш банк для оплаты</title>
+  <meta charset="UTF-8"> <!-- Устанавливаем кодировку UTF-8 для правильного отображения кириллицы -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Делаем страницу адаптивной под ширину экрана -->
+  <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок вкладки браузера -->
   <style>
+    /* ---------------------- Сброс базовых отступов ---------------------- */
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
+      margin: 0;              /* Убираем внешние отступы у html и body */
+      padding: 0;             /* Убираем внутренние отступы */
+      height: 100%;           /* Задаём высоту в 100% от высоты окна */
     }
+    /* ---------------------- Фон страницы ---------------------- */
     body {
-      display: flex;
-      flex-direction: column;  /* Стекаем кнопки по вертикали */
-      justify-content: center; /* Центрируем по вертикали */
-      align-items: center;     /* Центрируем по горизонтали */
-      background: #f5f5f5;
+      background-image: url('background.png'); /* Путь к вашему фоновому изображению */
+      background-size: cover;     /* Растягиваем фон так, чтобы он покрывал весь экран */
+      background-position: center;/* Центрируем фон по центру экрана */
+      display: flex;              /* Включаем flex-контейнер */
+      flex-direction: column;     /* Располагаем дочерние элементы (шапка + список) в колонку */
     }
+    /* ---------------------- Шапка страницы ---------------------- */
+    .header {
+      display: flex;                    /* Flex для горизонтальной раскладки элементов */
+      align-items: center;              /* Вертикальное выравнивание по центру */
+      padding: 10px;                    /* Внутренний отступ вокруг содержимого */
+      background-color: rgba(255,255,255,0.5); /* Полупрозрачный белый фон шапки */
+      backdrop-filter: blur(10px);      /* Размытие фона за шапкой в современных браузерах */
+      -webkit-backdrop-filter: blur(10px); /* Размытие для Safari */
+    }
+    /* ---------------------- Кнопка "Вернуться" ---------------------- */
+    .back-btn {
+      border: none;          /* Убираем рамку у кнопки */
+      background: none;      /* Прозрачный фон */
+      font-size: 16px;       /* Размер шрифта */
+      color: #333;           /* Цвет текста */
+      cursor: pointer;       /* Курсор указывает, что элемент кликабелен */
+      margin-right: auto;    /* Отодвигает логотип вправо */
+    }
+    /* ---------------------- Логотип в шапке ---------------------- */
+    .main-logo {
+      width: 40px;           /* Фиксированная ширина логотипа */
+      height: auto;          /* Авто-высота для сохранения пропорций */
+    }
+    /* ---------------------- Контейнер списка банков ---------------------- */
+    .bank-list {
+      flex: 1;               /* Занимает всё оставшееся пространство под шапкой */
+      overflow-y: auto;      /* Включает вертикальную прокрутку при переполнении */
+      padding: 10px;         /* Внутренний отступ от краёв контейнера */
+    }
+    /* ---------------------- Общие стили кнопок банков ---------------------- */
     .btn {
-      border: none;
-      background: none;
-      cursor: pointer;
-      width: 90%;
-      max-width: 400px;
-      margin: 10px 0;
+      width: 100%;           /* Кнопка растягивается на всю ширину контейнера */
+      max-width: 500px;      /* Но не более 500px для больших экранов */
+      margin: 8px auto;      /* Отступ сверху/снизу 8px, по центру по горизонтали */
+      padding: 12px;         /* Внутренний отступ для увеличения кликабельной области */
+      border: none;          /* Без внешней рамки */
+      border-radius: 12px;   /* Скруглённые углы радиусом 12px */
+      background-color: rgba(255,255,255,0.6); /* Полупрозрачный белый фон */
+      backdrop-filter: blur(10px);      /* Размытие фона за кнопкой */
+      -webkit-backdrop-filter: blur(10px); /* Размытие для Safari */
+      cursor: pointer;       /* Курсор указывает на кликабельность */
+      display: flex;         /* Flex внутри кнопки для выравнивания содержимого */
+      align-items: center;   /* Вертикальное выравнивание по центру */
     }
+    /* ---------------------- Логотип внутри кнопки ---------------------- */
     .btn img {
-      width: 100%;
-      height: auto;
-      display: block;
+      width: 32px;           /* Фиксированная ширина иконки банка */
+      height: auto;          /* Авто-высота для сохранения пропорций */
+      margin-right: 12px;    /* Отступ между иконкой и потенциальным текстом */
     }
   </style>
 </head>
+
 <body>
 
-  <button class="btn" onclick="window.location.href='tbank://main'">
-    <img src="tbank-logo.png" alt="T-Банк">
-  </button>
+  <!-- ====================== Шапка ====================== -->
+  <div class="header">
+    <button class="back-btn" onclick="closePage()">← Вернуться</button>
+      <!-- Кнопка для возврата; вызовет JS-функцию закрытия страницы -->
+    <img src="my-logo.png" alt="Ваш логотип" class="main-logo">
+      <!-- Ваш логотип вместо СПБ; замените my-logo.png на путь к вашему файлу -->
+  </div>
 
-  <button class="btn" onclick="window.location.href='https://www.sberbank.com/sms/pbpn?requisiteNumber=79309791051'">
-    <img src="sber-logo.png" alt="Сбер">
-  </button>
+  <!-- ====================== Список банков ====================== -->
+  <div class="bank-list">
+    <!-- Пример кнопки для Т-Банка -->
+    <button class="btn" onclick="openLink('LINK_TBANK')">
+      <!-- Замените LINK_TBANK на вашу ссылку на Android/универсальную ссылку -->
+      <img src="tbank-512.png" alt="Т-Банк">
+        <!-- Путь к логотипу Т-Банка 512×512 -->
+    </button>
 
-  <button class="btn" onclick="window.location.href='https://online.vtb.ru/i/'">
-    <img src="vtb-logo.png" alt="ВТБ">
-  </button>
+    <!-- Пример кнопки для Сбербанка -->
+    <button class="btn" onclick="openLink('LINK_SBERBANK')">
+      <!-- Замените LINK_SBERBANK на вашу ссылку -->
+      <img src="sber-512.png" alt="Сбербанк">
+        <!-- Путь к логотипу Сбербанка 512×512 -->
+    </button>
+
+    <!-- Добавьте остальные банки по аналогии ниже: -->
+    <!--
+    <button class="btn" onclick="openLink('LINK_GAZPROMBANK')">
+      <img src="gazprombank-512.png" alt="Газпромбанк">
+    </button>
+    -->
+    <!-- и так далее для Альфа-банк, Россельхозбанк, ПСБ, МКБ, ВТБ, МТС Банк, Почта Банк, Совкомбанк -->
+  </div>
 
   <script>
-    // Ждём полной загрузки страницы
-    window.addEventListener('load', function() {
-      // Устанавливаем таймаут на 5 секунд (5000 мс)
-      setTimeout(function() {
-        // 1) Пытаемся безопасно закрыть окно методом JS
-        window.close();
+    // ------------------ Функция закрытия страницы ------------------
+    function closePage() {
+      window.close();                   // Пытаемся закрыть окно JS
+      window.location.href = 'tg://';   // Если не получилось, переключаемся обратно в Telegram
+    }
 
-        // 2) Если закрыть не получилось (встроенный браузер это блокирует) —
-        //    пробуем открыть схему tg://, чтобы Telegram вернул фокус и закрыл WebView.
-        //    Как правило, встроенный браузер переключится обратно в чат.
-        window.location.href = 'tg://';
+    // -------- Функция обработки клика по кнопке банка --------
+    // принимает на вход URL (ссылку на Android-схему или веб-страницу)
+    function openLink(url) {
+      // Определяем iOS по userAgent
+      var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+      if (isIOS) {
+        showIOSAlert();                 // Если iOS — показываем кастомный алерт
+      } else {
+        window.location.href = url;     // Иначе (Android и др.) — просто переходим по ссылке
+      }
+    }
 
-      }, 5000);
-    });
+    // ------------ Функция отображения сообщения для iPhone/iPad ------------
+    function showIOSAlert() {
+      // Создаём полупрозрачную подложку на весь экран
+      var overlay = document.createElement('div');
+      overlay.style.position = 'fixed';
+      overlay.style.top = 0;
+      overlay.style.left = 0;
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+      overlay.style.display = 'flex';
+      overlay.style.justifyContent = 'center';
+      overlay.style.alignItems = 'center';
+      overlay.style.zIndex = 1000;
+
+      // Создаём сам блок сообщения
+      var alertBox = document.createElement('div');
+      alertBox.style.backgroundColor = '#fff';
+      alertBox.style.padding = '20px';
+      alertBox.style.borderRadius = '8px';
+      alertBox.style.textAlign = 'center';
+      alertBox.style.maxWidth = '80%';
+      alertBox.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+
+      // Текст сообщения
+      var message = document.createElement('p');
+      message.textContent = 'Вы зашли с айфона';
+      message.style.marginBottom = '20px';
+
+      // Кнопка "ОК"
+      var okBtn = document.createElement('button');
+      okBtn.textContent = 'ОК';
+      okBtn.style.padding = '10px 20px';
+      okBtn.style.border = 'none';
+      okBtn.style.borderRadius = '4px';
+      okBtn.style.cursor = 'pointer';
+      okBtn.style.backgroundColor = '#007aff';
+      okBtn.style.color = '#fff';
+
+      // По клику на "ОК" закрываем страницу
+      okBtn.addEventListener('click', function() {
+        closePage();
+      });
+
+      // Собираем элементы и добавляем на страницу
+      alertBox.appendChild(message);
+      alertBox.appendChild(okBtn);
+      overlay.appendChild(alertBox);
+      document.body.appendChild(overlay);
+    }
   </script>
 
 </body>

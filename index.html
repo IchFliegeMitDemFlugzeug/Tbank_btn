@@ -52,18 +52,6 @@
         transform: translateY(-6px);     /* Возвращение на место */
         opacity: 1;                   /* Полная видимость */
       }
-      85% {
-        transform: translateY(-4.5px);     /* Возвращение на место */
-        opacity: 1;                   /* Полная видимость */
-      }
-      90% {
-        transform: translateY(-3px);     /* Возвращение на место */
-        opacity: 1;                   /* Полная видимость */
-      }
-      95% {
-        transform: translateY(-1.5px);     /* Возвращение на место */
-        opacity: 1;                   /* Полная видимость */
-      }
       100% {
         transform: translateY(0);     /* Остаёмся на месте */
         opacity: 1;                   /* Полная видимость */
@@ -80,7 +68,7 @@
         to right,
         white 0%,
         white 15%,
-        rgba(255,255,255,0.2) 20%,
+        rgba(255,255,255,0.2) 50%,
         rgba(255,255,255,0) 100%
       );
       backdrop-filter: blur(6px);      /* Размытие фона под кнопкой */
@@ -101,7 +89,7 @@
       font-weight: bold;       /* Жирный */
       font-size: 16px;         /* Размер текста */
       color: #000;             /* Чёрный цвет */
-      text-shadow: 0 0 1px rgba(0,0,0,0.3); /* Тонкое размытие по контуру */
+      text-shadow: 0 0 1px rgba(0,0,0,0.2); /* Тонкое размытие по контуру */
     }
     /* Задержки анимации для каждой кнопки */
     .btn:nth-child(1)  { animation-delay: 0.00s; }

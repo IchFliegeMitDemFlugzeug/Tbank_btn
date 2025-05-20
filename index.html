@@ -1,102 +1,99 @@
 <!DOCTYPE html> <!-- Определяет документ как HTML5 -->
-<html lang="ru"> <!-- Устанавлиет язык страницы — русский -->
+<html lang="ru"> <!-- Устанавливает язык страницы — русский -->
 <head> <!-- Начало секции метаданных -->
-  <meta charset="UTF-8"> <!-- Задает кодировку документа в UTF-8 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Обеспечивает адаптивность под разные экраны -->
-  <title>Выберите Ваш банк для оплаты</title> <!-- Текст, отображаемый в заголовке вкладки -->
+  <meta charset="UTF-8"> <!-- Кодировка документа UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивность под ширину экрана -->
+  <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок вкладки браузера -->
   <style> /* Начало блока стилей CSS */
-    html, body { /* Сбрасываем отступы и задаем высоту для html и body */
+    html, body { /* Сбрасываем отступы и задаём высоту для html и body */
       margin: 0; /* Убираем внешние отступы */
       padding: 0; /* Убираем внутренние отступы */
-      height: 100%; /* Задаем высоту в 100% от окна браузера */
+      height: 100%; /* Высота 100% от окна браузера */
     }
-    body { /* Стили для тега body */
-      background-image: url('background.png'); /* Фоновое изображение страницы */
-      background-size: cover; /* Заставляет фон покрывать весь контейнер */
-      background-position: center; /* Центрирует фоновое изображение */
-      display: flex; /* Включает флекс-контейнер для body */
-      flex-direction: column; /* Располагает содержимое по вертикали */
+    body { /* Стили для тега body — фон и флекс-контейнер */
+      background-image: url('background.png'); /* Фоновой рисунок */
+      background-size: cover; /* Покрытие всего экрана */
+      background-position: center; /* Центрирование фона */
+      display: flex; /* Включаем flex-контейнер */
+      flex-direction: column; /* Располагаем элементы по вертикали */
     }
-    .header { /* Стили для контейнера шапки */
-      display: flex; /* Включает флекс-контейнер */
-      align-items: center; /* Выравнивает элементы по вертикали по центру */
-      padding: 10px; /* Внутренний отступ вокруг содержимого шапки */
-      background-color: rgba(255,255,255,0.5); /* Полупрозрачный белый фон */
-      backdrop-filter: blur(6px); /* Размывает фон позади шапки */
-      -webkit-backdrop-filter: blur(6px); /* Размывает фон в Safari */
+    .header { /* Стили для шапки страницы */
+      display: flex; /* Flex-контейнер */
+      align-items: center; /* Вертикальное выравнивание */
+      padding: 10px; /* Внутренний отступ */
+      background-color: rgba(255,255,255,0.5); /* Полупрозрачный фон */
+      backdrop-filter: blur(6px); /* Размытие фона позади */
+      -webkit-backdrop-filter: blur(6px); /* Для Safari */
     }
-    .back-btn { /* Стили для кнопки «← Вернуться» */
-      border: none; /* Убирает рамку кнопки */
-      background: none; /* Делает фон прозрачным */
-      font-size: 16px; /* Размер текста кнопки */
-      color: #333; /* Цвет текста кнопки */
-      cursor: pointer; /* Курсор «рука» при наведении */
-      margin-right: auto; /* Отодвигает кнопку от правого края шапки */
+    .back-btn { /* Кнопка «← Вернуться» */
+      border: none; /* Без рамки */
+      background: none; /* Прозрачный фон */
+      font-size: 16px; /* Размер шрифта */
+      color: #333; /* Цвет текста */
+      cursor: pointer; /* Курсор «рука» */
+      margin-right: auto; /* Отодвигает кнопку влево */
     }
-    .main-logo { /* Стили для изображения логотипа */
-      width: 80px; /* Фиксированная ширина логотипа */
-      height: auto; /* Автоматическая высота для сохранения пропорций */
+    .main-logo { /* Логотип в шапке */
+      width: 80px; /* Фиксированная ширина */
+      height: auto; /* Автовысота */
     }
-    .bank-list { /* Стили для контейнера списка банков */
-      flex: 1; /* Занимает все доступное пространство по вертикали */
-      overflow-y: auto; /* Позволяет вертикальную прокрутку */
-      padding: 10px; /* Внутренний отступ вокруг списка */
-      -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
-      overscroll-behavior: contain; /* Отключает системный эффект «упора» */
-      overscroll-behavior-y: contain; /* Отключает вертикальный «упор» */
+    .bank-list { /* Контейнер со списком банков */
+      flex: 1; /* Занимает всё доступное пространство */
+      overflow-y: auto; /* Вертикальная прокрутка */
+      padding: 10px; /* Внутренние отступы */
+      -webkit-overflow-scrolling: touch; /* Плавная прокрутка iOS */
+      overscroll-behavior: contain; /* Отключаем системный «упор» */
+      overscroll-behavior-y: contain; /* Отключаем вертикальный «упор» */
     }
-    @keyframes slideUp { /* Определение ключевой анимации slideUp */
+    @keyframes slideUp { /* Ключевая анимация «выезд снизу» */
       0% {
-        transform: translateY(100px); /* Начальное смещение вниз на 100px */
-        opacity: 0; /* Начальная прозрачность */
+        transform: translateY(100px); /* Исходный сдвиг вниз */
+        opacity: 0; /* Прозрачность 0 */
       }
       80% {
-        transform: translateY(-6px); /* Отскок вверх на 6px */
+        transform: translateY(-6px); /* Лёгкий отскок вверх */
         opacity: 1; /* Полная видимость */
       }
       100% {
         transform: translateY(0); /* Возвращение в исходное положение */
-        opacity: 1; /* Остается полностью видимым */
+        opacity: 1; /* Остаётся видимым */
       }
     }
-    .btn { /* Общие стили для кнопок банков */
-      width: 100%; /* Занимает всю ширину контейнера */
-      max-width: 500px; /* Не расширяется более чем на 500px */
-      margin: 8px auto; /* Верхний/нижний отступ 8px, по центру горизонтально */
-      padding: 12px; /* Внутренний отступ внутри кнопок */
+    .btn { /* Общие стили кнопок банков */
+      width: 100%; /* По ширине контейнера */
+      max-width: 500px; /* Не более 500px */
+      margin: 8px auto; /* Отступы 8px сверху/снизу, центрирование */
+      padding: 12px; /* Внутренний отступ */
       border: none; /* Без рамки */
-      border-radius: 12px; /* Скругленные углы радиусом 12px */
-      background: linear-gradient( /* Градиент фона кнопки */
+      border-radius: 12px; /* Скруглённые углы */
+      background: linear-gradient( /* Градиент от белого к прозрачному */
         to right,
-        white 0%, /* Белый цвет в начале */
-        white 15%, /* Белый цвет до 15% ширины */
-        rgba(255,255,255,0.2) 50%, /* Полупрозрачный белый на середине */
-        rgba(255,255,255,0) 100% /* Полностью прозрачный к концу */
+        white 0%, white 15%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0) 100%
       );
-      backdrop-filter: blur(6px); /* Размывает фон под кнопкой */
-      -webkit-backdrop-filter: blur(6px); /* Размывает фон в Safari */
-      cursor: pointer; /* Курсор «рука» при наведении */
-      display: flex; /* Flex-контейнер для содержимого кнопки */
-      align-items: center; /* Выравнивает содержимое по вертикали */
-      opacity: 0; /* Скрытые до запуска анимации */
-      transform: translateY(100px); /* Предварительный сдвиг вниз */
+      backdrop-filter: blur(6px); /* Размытие фона под кнопкой */
+      -webkit-backdrop-filter: blur(6px); /* Для Safari */
+      cursor: pointer; /* Курсор «рука» */
+      display: flex; /* Flex для иконки и текста */
+      align-items: center; /* Центрирование по вертикали */
+      opacity: 0; /* Скрыты до анимации */
+      transform: translateY(100px); /* Сдвиг вниз перед анимацией */
     }
-    .btn img { /* Стили для иконки внутри кнопки */
-      width: 32px; /* Фиксированная ширина иконки */
-      height: auto; /* Автовысота для сохранения пропорций */
-      margin-right: 12px; /* Отступ справа между иконкой и текстом */
+    .btn img { /* Иконка внутри кнопки */
+      width: 32px; /* Фиксированная ширина */
+      height: auto; /* Автовысота */
+      margin-right: 12px; /* Отступ справа */
     }
-    .btn-text { /* Стили для текста внутри кнопки */
-      font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт текста */
+    .btn-text { /* Текст внутри кнопки */
+      font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт */
       font-weight: bold; /* Жирное начертание */
-      font-size: 16px; /* Размер шрифта */
-      color: #000; /* Цвет текста — черный */
-      text-shadow: 0 0 1px rgba(0,0,0,0.2); /* Легкое размытие по контуру для читаемости */
+      font-size: 16px; /* Размер текста */
+      color: #000; /* Чёрный цвет */
+      text-shadow: 0 0 1px rgba(0,0,0,0.2); /* Контур для читаемости */
     }
-    .btn:nth-child(1)  { animation-delay: 0.00s; } /* Задержка старта анимации для 1-й кнопки */
-    .btn:nth-child(2)  { animation-delay: 0.05s; } /* для 2-й кнопки */
-    .btn:nth-child(3)  { animation-delay: 0.10s; } /* для 3-й кнопки */
-    .btn:nth-child(4)  { animation-delay: 0.15s; } /* и т.д. */
+    .btn:nth-child(1)  { animation-delay: 0.00s; } /* Задержка анимации для 1-й кнопки */
+    .btn:nth-child(2)  { animation-delay: 0.05s; } /* 2-я кнопка */
+    .btn:nth-child(3)  { animation-delay: 0.10s; }
+    .btn:nth-child(4)  { animation-delay: 0.15s; }
     .btn:nth-child(5)  { animation-delay: 0.20s; }
     .btn:nth-child(6)  { animation-delay: 0.25s; }
     .btn:nth-child(7)  { animation-delay: 0.30s; }
@@ -106,177 +103,161 @@
     .btn:nth-child(11) { animation-delay: 0.50s; }
   </style> <!-- Конец блока CSS -->
 </head>
-<body> <!-- Начало тела документа -->
+<body> <!-- Начало тела страницы -->
 
-  <div class="header"> <!-- Контейнер шапки -->
-    <button class="back-btn" onclick="closePage()">← Вернуться</button> <!-- Кнопка возврата -->
+  <div class="header"> <!-- Шапка с кнопкой возврата и логотипом -->
+    <button class="back-btn" onclick="closePage()">← Вернуться</button> <!-- Вызываем Telegram и закрываем -->
     <img src="LOGO.png" alt="Ваш логотип" class="main-logo"> <!-- Логотип -->
   </div>
 
-  <div class="bank-list"> <!-- Контейнер списка банков -->
-    <button class="btn"
-      onclick="openLink('sberpayapp://', 'https://online.sberbank.ru/CSAFront/index.do')">
-      <img src="LOGO_SBER.png" alt="Сбербанк"> <!-- Иконка Сбербанка -->
-      <span class="btn-text">Сбербанк</span> <!-- Текст кнопки -->
+  <div class="bank-list"> <!-- Скроллируемый список кнопок -->
+    <button class="btn" onclick="openLink('sberpayapp://', 'https://online.sberbank.ru/CSAFront/index.do')">
+      <img src="LOGO_SBER.png" alt="Сбербанк"><span class="btn-text">Сбербанк</span>
     </button>
-    <button class="btn"
-      onclick="openLink('alfabank://account', 'https://web.alfabank.ru/dashboard')">
-      <img src="LOGO_ALFABANK.png" alt="Альфа-Банк">
-      <span class="btn-text">Альфа-Банк</span>
+    <button class="btn" onclick="openLink('alfabank://account', 'https://web.alfabank.ru/dashboard')">
+      <img src="LOGO_ALFABANK.png" alt="Альфа-Банк"><span class="btn-text">Альфа-Банк</span>
     </button>
-    <button class="btn"
-      onclick="openLink('tbank://main', 'https://www.tbank.ru/mybank/')">
-      <img src="LOGO_TBANK.png" alt="Т-Банк">
-      <span class="btn-text">Т-Банк</span>
+    <button class="btn" onclick="openLink('tbank://main', 'https://www.tbank.ru/mybank/')">
+      <img src="LOGO_TBANK.png" alt="Т-Банк"><span class="btn-text">Т-Банк</span>
     </button>
-    <button class="btn"
-      onclick="openLink('rshbmbfl://', 'https://online.rshb.ru/cas-auth/index?forceAuth=true')">
-      <img src="LOGO_RSHB.png" alt="Россельхозбанк">
-      <span class="btn-text">Россельхозбанк</span>
+    <button class="btn" onclick="openLink('rshbmbfl://', 'https://online.rshb.ru/cas-auth/index?forceAuth=true')">
+      <img src="LOGO_RSHB.png" alt="Россельхозбанк"><span class="btn-text">Россельхозбанк</span>
     </button>
-    <button class="btn"
-      onclick="openLink('gpbapp://', 'https://ib.online.gpb.ru/')">
-      <img src="LOGO_GAZPROMBANK.png" alt="Газпромбанк">
-      <span class="btn-text">Газпромбанк</span>
+    <button class="btn" onclick="openLink('gpbapp://', 'https://ib.online.gpb.ru/')">
+      <img src="LOGO_GAZPROMBANK.png" alt="Газпромбанк"><span class="btn-text">Газпромбанк</span>
     </button>
-    <button class="btn"
-      onclick="openLink('psbmobile://auth/accounts', 'https://ib.psbank.ru/settings')">
-      <img src="LOGO_PSB.png" alt="ПСБ">
-      <span class="btn-text">ПСБ</span>
+    <button class="btn" onclick="openLink('psbmobile://auth/accounts', 'https://ib.psbank.ru/settings')">
+      <img src="LOGO_PSB.png" alt="ПСБ"><span class="btn-text">ПСБ</span>
     </button>
-    <button class="btn"
-      onclick="openLink('mkb2://deeplink', 'https://online.mkb.ru/login')">
-      <img src="LOGO_MKB.png" alt="МКБ">
-      <span class="btn-text">МКБ</span>
+    <button class="btn" onclick="openLink('mkb2://deeplink', 'https://online.mkb.ru/login')">
+      <img src="LOGO_MKB.png" alt="МКБ"><span class="btn-text">МКБ</span>
     </button>
-    <button class="btn"
-      onclick="openLink('vtb://vtb.ru/i/', 'https://online.vtb.ru/login')">
-      <img src="LOGO_VTB.png" alt="ВТБ">
-      <span class="btn-text">ВТБ</span>
+    <button class="btn" onclick="openLink('vtb://vtb.ru/i/', 'https://online.vtb.ru/login')">
+      <img src="LOGO_VTB.png" alt="ВТБ"><span class="btn-text">ВТБ</span>
     </button>
-    <button class="btn"
-      onclick="openLink('mtsmoney://', 'https://sso.mtsbank.ru/login/mtsmoney/auth/')">
-      <img src="LOGO_MTSBANK.png" alt="МТС Банк">
-      <span class="btn-text">МТС Банк</span>
+    <button class="btn" onclick="openLink('mtsmoney://', 'https://sso.mtsbank.ru/login/mtsmoney/auth/')">
+      <img src="LOGO_MTSBANK.png" alt="МТС Банк"><span class="btn-text">МТС Банк</span>
     </button>
-    <button class="btn"
-      onclick="openLink('bank100000000016://sbpay', 'https://my.pochtabank.ru/login')">
-      <img src="LOGO_POCHTABANK.png" alt="Почта Банк">
-      <span class="btn-text">Почта Банк</span>
+    <button class="btn" onclick="openLink('bank100000000016://sbpay', 'https://my.pochtabank.ru/login')">
+      <img src="LOGO_POCHTABANK.png" alt="Почта Банк"><span class="btn-text">Почта Банк</span>
     </button>
-    <button class="btn"
-      onclick="openLink('ompshared://', 'https://bk.sovcombank.ru/ru/html/login.html')">
-      <img src="LOGO_SOVKOMBANK.png" alt="Совкомбанк">
-      <span class="btn-text">Совкомбанк</span>
+    <button class="btn" onclick="openLink('ompshared://', 'https://bk.sovcombank.ru/ru/html/login.html')">
+      <img src="LOGO_SOVKOMBANK.png" alt="Совкомбанк"><span class="btn-text">Совкомбанк</span>
     </button>
   </div>
 
-  <script> /* Начало блока JavaScript */
-    // Функция для вызова клиента Telegram и закрытия вкладки
+  <script> /* Начало скрипта JavaScript */
+    // Функция: вызывает клиент Telegram и закрывает вкладку
     function closePage() {
-      window.location.href = 'tg://'; // Редирект на схему tg:// — запускает Telegram
-      setTimeout(function() {         // Ждем 100 мс перед закрытием
-        window.close();               // Закрываем текущее окно/вкладку
-      }, 100);                         // Время задержки — 100 мс
+      window.location.href = 'tg://'; // Редирект на схему tg://
+      setTimeout(function() {         // Ждём 100 мс, затем
+        window.close();               // закрываем вкладку
+      }, 100);
     }
 
-    // Функция для открытия ссылки банка и автоматического закрытия вкладки
+    // Функция: открывает ссылку банка и закрывает вкладку
     function openLink(androidUrl, webUrl) {
-      var ua = navigator.userAgent || ''; // Читаем User-Agent браузера
-      var isIOS = /iPhone|iPad|iPod/.test(ua); // Проверяем, iOS ли устройство
-      var isTelegramWebView = /Telegram\/\d+\.\d+/.test(ua); // Встроенный WebView Telegram?
-      var isAndroid = /Android/.test(ua);   // Проверяем Android
+      var ua = navigator.userAgent || '';                 // User-Agent
+      var isIOS = /iPhone|iPad|iPod/.test(ua);             // iOS?
+      var isTelegramWebView = /Telegram\/\d+\.\d+/.test(ua); // Telegram WebView?
+      var isAndroid = /Android/.test(ua);                 // Android?
 
-      if (isAndroid) {                      // Если Android:
-        window.location.href = androidUrl;  //   Переходим по Deeplink
-      }
-      else if (isIOS && isTelegramWebView) { // Если iOS в WebView Telegram:
-        window.open(webUrl, '_blank', 'noopener'); // Открываем в Safari
-      }
-      else {                                // Во всех остальных случаях:
-        window.open(webUrl, '_blank');      //   Открываем веб-ссылку в новой вкладке
+      if (isAndroid) {                                     // На Android
+        window.location.href = androidUrl;                 // Deeplink
+      } else if (isIOS && isTelegramWebView) {            // В iOS Telegram
+        window.open(webUrl, '_blank', 'noopener');        // В Safari
+      } else {                                            // Во всех остальных
+        window.open(webUrl, '_blank');                    // Новая вкладка
       }
 
-      setTimeout(function() {               // Ждем 200 мс перед закрытием
-        window.close();                     //   Закрываем текущее окно/вкладку
-      }, 200);                              // Время задержки — 200 мс
+      setTimeout(function() {                             // Через 200 мс
+        window.close();                                   // закрываем вкладку
+      }, 200);
     }
 
-    // Функция предзагрузки изображений: фон и иконки
+    // Функция предзагрузки изображений
     function preloadImages(urls, callback) {
-      var loaded = 0;                       // Счетчик загруженных файлов
-      function onLoad() {                   // Коллбэк при завершении загрузки или ошибке
-        if (++loaded === urls.length) {    // Как только все изображения обработаны:
-          callback();                      //   Вызываем переданную функцию
+      var loaded = 0;                                     // Счетчик
+      function onLoad() {                                 // При load/error
+        if (++loaded === urls.length) {                  // Если все обработано
+          callback();                                     // вызываем callback
         }
       }
-      urls.forEach(function(url) {         // Для каждого URL изображения:
-        var img = new Image();             //   Создаем DOM-элемент Image
-        img.onload  = onLoad;              //   На успешную загрузку — onLoad
-        img.onerror = onLoad;              //   На ошибку — тоже onLoad
-        img.src     = url;                 //   Запускаем загрузку, установив src
+      urls.forEach(function(url) {                        // Для каждого URL
+        var img = new Image();                           // создаем Image
+        img.onload  = onLoad;                            // onload
+        img.onerror = onLoad;                            // onerror
+        img.src     = url;                               // старт загрузки
       });
     }
 
-    // Ждем полной загрузки DOM, затем запускаем логику
     document.addEventListener('DOMContentLoaded', function() {
-      var bgCss  = window.getComputedStyle(document.body).backgroundImage; // Получаем CSS background-image
-      var bgUrl  = bgCss.slice(5, -2);        // Извлекаем URL из form `url("...")`
-      var imgEls = Array.from(document.querySelectorAll('img')); // Собираем все <img> элементы
-      var imgUrls = imgEls.map(function(img) { return img.src; }); // Массив src всех картинок
-      var allUrls = [bgUrl].concat(imgUrls); // Объединяем URL фона и иконок в один массив
+      var bgCss  = window.getComputedStyle(document.body).backgroundImage; // CSS background-image
+      var bgUrl  = bgCss.slice(5, -2);                    // Извлекаем URL
+      var imgEls = Array.from(document.querySelectorAll('img'));         // Все <img>
+      var imgUrls = imgEls.map(function(img) { return img.src; });       // Их src
+      var allUrls = [bgUrl].concat(imgUrls);             // Объединяем массивы
 
-      preloadImages(allUrls, startAnim);      // Предзагружаем все картинки, затем анимируем кнопки
+      preloadImages(allUrls, startAnim);                 // Предзагружаем, затем анимируем
 
-      var list     = document.querySelector('.bank-list'); // Ссылка на контейнер банка
-      var buttons  = Array.from(document.querySelectorAll('.btn')); // Массив всех кнопок
-      var startY   = 0;                       // Начальная координата Y при таче
-      var touching = false;                   // Флаг: пользователь сейчас тачет по списку
+      var list     = document.querySelector('.bank-list');          // Список банков
+      var buttons  = Array.from(document.querySelectorAll('.btn')); // Все кнопки
+      var startY   = 0;                                   // Начальная Y координата
+      var touching = false;                               // Флаг тача
+      var rafPending = false;                             // Флаг для requestAnimationFrame
+      var lastScale = 1;                                  // Последний масштаб
 
-      // Обработка начала касания по списку
+      // Начало касания по списку
       list.addEventListener('touchstart', function(e) {
-        touching = true;                      // Входим в состояние тача
-        startY   = e.touches[0].clientY;      // Запоминаем Y-координату первого касания
+        touching = true;                                  // Та́ч начат
+        startY   = e.touches[0].clientY;                  // Запоминаем Y точки касания
       });
 
-      // Обработка движения пальца по списку
+      // Движение пальца по списку — с throttle через rAF
       list.addEventListener('touchmove', function(e) {
-        if (!touching) return;                // Если не в таче — выходим
-        var delta = e.touches[0].clientY - startY;            // Смещение по Y
-        var scale = 1 + Math.min(Math.abs(delta) / 200, 0.1); // Масштаб растяжения до +10%
+        if (!touching) return;                            // Если не тач — игнорируем
+        var delta = e.touches[0].clientY - startY;        // Смещение по Y
+        var scale = 1 + Math.min(Math.abs(delta) / 200, 0.1); // Масштаб до +10%
 
-        // Если «уперлись» в начало или конец списка:
+        // Если «упёрлись» в начало или конец списка
         if ((list.scrollTop === 0 && delta > 0) ||
             (list.scrollTop + list.clientHeight >= list.scrollHeight && delta < 0)) {
-          buttons.forEach(function(btn) {      // Для каждой кнопки:
-            btn.style.transform = 'scaleY(' + scale + ')';   // Растягиваем по высоте
-            var newMargin = 8 * scale;        // Вычисляем новый margin на основе scale
-            btn.style.margin = newMargin + 'px auto'; // Применяем вертикальный margin
-          });
+          lastScale = scale;                              // Сохраняем значение
+          if (!rafPending) {                              // Если rAF не запланирован
+            rafPending = true;                            // Устанавливаем флаг
+            requestAnimationFrame(function() {            // Планируем обновление
+              buttons.forEach(function(btn) {             // Для каждой кнопки:
+                btn.style.transform = 'scaleY(' + lastScale + ')'; // Растягиваем по высоте
+                var newMargin = 8 * lastScale;            // Вычисляем новый margin
+                btn.style.margin = newMargin + 'px auto'; // Применяем margin
+              });
+              rafPending = false;                         // Сбрасываем флаг
+            });
+          }
         }
       });
 
-      // Обработка окончания касания по списку
+      // Окончание тача — плавно возвращаем всё в исходное состояние
       list.addEventListener('touchend', function() {
-        touching = false;                     // Выходим из состояния тача
-        buttons.forEach(function(btn) {       // Для каждой кнопки:
-          btn.style.transition = 'transform 0.3s, margin 0.3s'; // Добавляем плавный переход
-          btn.style.transform  = 'scaleY(1)'; // Возвращаем нормальную высоту
-          btn.style.margin     = '8px auto';  // Возвращаем исходный margin
-          setTimeout(function() {             // После окончания анимации:
-            btn.style.transition = '';        // Убираем свойство transition
-          }, 300);                            // Задержка равна длительности анимации
+        touching = false;                                 // Сбрасываем флаг тача
+        buttons.forEach(function(btn) {                   // Для каждой кнопки:
+          btn.style.transition = 'transform 0.3s, margin 0.3s'; // Плавный переход
+          btn.style.transform  = 'scaleY(1)';             // Возвращаем нормальный масштаб
+          btn.style.margin     = '8px auto';              // Возвращаем исходный margin
+          setTimeout(function() {                         // По окончании анимации
+            btn.style.transition = '';                    // Убираем transition
+          }, 300);
         });
       });
     });
 
-    // Запускает анимацию slideUp для всех кнопок с задержками
+    // Запуск анимации slideUp для кнопок
     function startAnim() {
       document.querySelectorAll('.btn').forEach(function(btn, i) {
-        btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's'; // Применяем анимацию
+        btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';
       });
     }
-  </script> <!-- Конец блока JavaScript -->
+  </script> <!-- Конец скрипта JavaScript -->
 
 </body>
 </html>

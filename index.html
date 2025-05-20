@@ -49,7 +49,7 @@
         opacity: 0;                   /* Прозрачность: 0 */
       }
       80% {
-        transform: translateY(0);     /* Возвращение на место */
+        transform: translateY(-5);     /* Возвращение на место */
         opacity: 1;                   /* Полная видимость */
       }
       100% {
@@ -68,7 +68,7 @@
         to right,
         white 0%,
         white 15%,
-        rgba(255,255,255,0) 25%,
+        rgba(255,255,255,0.2) 50%,
         rgba(255,255,255,0) 100%
       );
       backdrop-filter: blur(6px);      /* Размытие фона под кнопкой */
@@ -172,112 +172,135 @@
     </button>
   </div>
 
-  <script> /* Начало блока JavaScript */
-    /** 
-     * Закрывает страницу и сразу возвращает в клиент Telegram.
-     * Вызывается по кнопке «← Вернуться».
-     */
-    function closePage() {
-      window.location.href = 'tg://';
+  <script> 
+  /**
+   * Закрывает вкладку, предварительно вызвав клиент Telegram.
+   */
+  function closePage() {
+    // 1) Перенаправляем текущую страницу на схему tg://,
+    //    что должно запустить нативный клиент Telegram.
+    window.location.href = 'tg://';
+    // 2) Через 100 мс пытаемся закрыть вкладку/окно,
+    //    чтобы не оставлять пустую вкладку в браузере.
+    setTimeout(function() {
+      window.close();
+    }, 100);
+  }
+
+  /**
+   * Открывает ссылку банка и автоматически закрывает вкладку.
+   * @param {string} androidUrl — Deeplink для Android (например, 'sberpayapp://').
+   * @param {string} webUrl     — Веб-ссылка (например, 'https://online.sberbank.ru/...').
+   */
+  function openLink(androidUrl, webUrl) {
+    // Получаем строку User-Agent для определения платформы.
+    var ua = navigator.userAgent || '';
+
+    // Признак iOS-устройства (iPhone, iPad, iPod).
+    var isIOS = /iPhone|iPad|iPod/.test(ua);
+    // Признак встраиваемого браузера Telegram (есть «Telegram/XX» в UA).
+    var isTelegramWebView = /Telegram\/\d+\.\d+/.test(ua);
+    // Признак Android
+    var isAndroid = /Android/.test(ua);
+
+    if (isAndroid) {
+      // На Android сразу запускаем Deeplink,
+      // чтобы открыть приложение банка напрямую.
+      window.location.href = androidUrl;
+    }
+    else if (isIOS && isTelegramWebView) {
+      // На iOS в Telegram WebView: открываем в Safari
+      // через window.open с target _blank и rel=noopener,
+      // что вынудит систему использовать внешний браузер.
+      window.open(webUrl, '_blank', 'noopener');
+    }
+    else {
+      // Во всех остальных случаях (десктоп, мобильный вне Telegram):
+      // открываем веб-версию в новой вкладке.
+      window.open(webUrl, '_blank');
     }
 
-    /**
-     * Открывает ссылку для банков:
-     * - на Android запускает deeplink (androidUrl);
-     * - на всех остальных устройствах открывает webUrl в новом окне;
-     * После открытия через 5 секунд закрывает текущее окно/вкладку.
-     */
-    function openLink(androidUrl, webUrl) {
-      var isAndroid = /Android/.test(navigator.userAgent); // Проверка на Android
-      var target   = isAndroid ? androidUrl : webUrl;      // Выбор нужного URL
+    // Через 200 мс после перехода пытаемся закрыть вкладку,
+    // чтобы дать время на срабатывание deeplink/web-url.
+    setTimeout(function() {
+      window.close();
+    }, 200);
+  }
 
-      if (isAndroid) {
-        window.location.href = target; // Deeplink на Android
-      } else {
-        window.open(target, '_blank'); // Открытие в новом окне для остальных
+  /**
+   * Предзагружает все изображения (включая фон),
+   * и только после этого запускает анимацию кнопок.
+   * (Оставляем без изменений.)
+   */
+  function preloadImages(urls, callback) {
+    var loaded = 0;
+    function onLoad() {
+      if (++loaded === urls.length) {
+        callback();
       }
-
-      // По истечении 5 секунд закрываем текущую страницу во всех браузерах
-      setTimeout(function() {
-        window.close();
-      }, 5000);
     }
+    urls.forEach(function(url) {
+      var img = new Image();
+      img.onload  = onLoad;
+      img.onerror = onLoad;
+      img.src     = url;
+    });
+  }
 
-    /**
-     * Предзагружает массив URL-изображений и вызывает callback,
-     * когда все они либо загрузились, либо произошла ошибка.
-     */
-    function preloadImages(urls, callback) {
-      var loaded = 0;              // Счётчик загруженных изображений
-      function onLoad() {          // Общий обработчик load/error
-        if (++loaded === urls.length) {
-          callback();              // Когда все обработаны, запускаем callback
-        }
-      }
-      urls.forEach(function(url) { // Для каждого URL
-        var img = new Image();     // Создаём объект Image
-        img.onload  = onLoad;      // При успешной загрузке
-        img.onerror = onLoad;      // При ошибке тоже считаем
-        img.src     = url;         // Устанавливаем src для начала загрузки
-      });
-    }
+  // После загрузки DOM устанавливаем поведение:
+  document.addEventListener('DOMContentLoaded', function() {
+    // Собираем URL фонового изображения
+    var bgCss   = window.getComputedStyle(document.body).backgroundImage;
+    var bgUrl   = bgCss.slice(5, -2);
+    // Собираем все <img> на странице
+    var imgEls  = Array.from(document.querySelectorAll('img'));
+    var imgUrls = imgEls.map(function(img) { return img.src; });
+    var allUrls = [bgUrl].concat(imgUrls);
 
-    // После полной сборки DOM
-    document.addEventListener('DOMContentLoaded', function() {
-      // 1) Собираем URL фонового изображения из CSS
-      var bgCss   = window.getComputedStyle(document.body).backgroundImage;
-      var bgUrl   = bgCss.slice(5, -2); // Обрезаем `url("…")` → `…`
-      // 2) Собираем URL всех <img> на странице
-      var imgEls  = Array.from(document.querySelectorAll('img'));
-      var imgUrls = imgEls.map(function(img) { return img.src; });
-      // 3) Объединяем фон и все изображения
-      var allUrls = [bgUrl].concat(imgUrls);
+    // Предзагрузка и анимация кнопок
+    preloadImages(allUrls, startAnim);
 
-      // Предзагружаем все картинки и только потом запускаем анимацию кнопок
-      preloadImages(allUrls, startAnim);
+    // Реализация «растяжки» кнопок при «упоре» прокрутки (остается без изменений)
+    var list     = document.querySelector('.bank-list');
+    var buttons  = document.querySelectorAll('.btn');
+    var startY   = 0;
+    var touching = false;
 
-      // Реализуем «растяжку» кнопок при «упоре» прокрутки в любом направлении
-      var list     = document.querySelector('.bank-list');
-      var buttons  = document.querySelectorAll('.btn');
-      var startY   = 0;
-      var touching = false;
-
-      list.addEventListener('touchstart', function(e) {
-        touching = true;                 // Флаг активного тача
-        startY   = e.touches[0].clientY; // Запоминаем стартовую Y-координату
-      });
-      list.addEventListener('touchmove', function(e) {
-        if (!touching) return;
-        var delta = e.touches[0].clientY - startY; // Сдвиг по Y
-        var scale = 1 + Math.min(Math.abs(delta) / 200, 0.1); // Масштаб до +10%
-
-        // Если список на вершине и тянут вниз, или внизу и тянут вверх
-        if ((list.scrollTop === 0 && delta > 0) ||
-            (list.scrollTop + list.clientHeight >= list.scrollHeight && delta < 0)) {
-          buttons.forEach(function(btn) {
-            btn.style.transform = 'scaleY(' + scale + ')'; // Растягиваем
-          });
-        }
-      });
-      list.addEventListener('touchend', function() {
-        touching = false; // Сбрасываем флаг тача
+    list.addEventListener('touchstart', function(e) {
+      touching = true;
+      startY   = e.touches[0].clientY;
+    });
+    list.addEventListener('touchmove', function(e) {
+      if (!touching) return;
+      var delta = e.touches[0].clientY - startY;
+      var scale = 1 + Math.min(Math.abs(delta) / 200, 0.1);
+      if ((list.scrollTop === 0 && delta > 0) ||
+          (list.scrollTop + list.clientHeight >= list.scrollHeight && delta < 0)) {
         buttons.forEach(function(btn) {
-          btn.style.transition = 'transform 0.3s'; // Добавляем плавный переход
-          btn.style.transform  = 'scaleY(1)';     // Возвращаем исходный масштаб
-          setTimeout(function() { btn.style.transition = ''; }, 300); // Убираем transition
+          btn.style.transform = 'scaleY(' + scale + ')';
         });
+      }
+    });
+    list.addEventListener('touchend', function() {
+      touching = false;
+      buttons.forEach(function(btn) {
+        btn.style.transition = 'transform 0.3s';
+        btn.style.transform  = 'scaleY(1)';
+        setTimeout(function() { btn.style.transition = ''; }, 300);
       });
     });
+  });
 
-    /**
-     * Запускает анимацию slideUp для всех кнопок с небольшими задержками.
-     */
-    function startAnim() {
-      document.querySelectorAll('.btn').forEach(function(btn, i) {
-        btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';
-      });
-    }
-  </script> <!-- Конец блока JavaScript -->
+  /**
+   * Запуск анимации «выезд снизу» для всех кнопок.
+   */
+  function startAnim() {
+    document.querySelectorAll('.btn').forEach(function(btn, i) {
+      btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';
+    });
+  }
+</script>
+
 
 </body>
 </html>

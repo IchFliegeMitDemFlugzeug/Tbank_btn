@@ -14,8 +14,8 @@
       background-image: url('background.png'); /* Фоновой рисунок */
       background-size: cover; /* Покрытие всего экрана */
       background-position: center; /* Центрирование фона */
-      display: flex; /* Включаем flex-контейнер */
-      flex-direction: column; /* Располагаем элементы по вертикали */
+      display: flex; /* Flex-контейнер */
+      flex-direction: column; /* Элементы по вертикали */
     }
     .header { /* Стили для шапки страницы */
       display: flex; /* Flex-контейнер */
@@ -68,7 +68,7 @@
       border-radius: 12px; /* Скруглённые углы */
       background: linear-gradient( /* Градиент от белого к прозрачному */
         to right,
-        white 0%, white 15%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0) 100%
+        white 0%, white 15%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%
       );
       backdrop-filter: blur(6px); /* Размытие фона под кнопкой */
       -webkit-backdrop-filter: blur(6px); /* Для Safari */
@@ -90,8 +90,8 @@
       color: #000; /* Чёрный цвет */
       text-shadow: 0 0 1px rgba(0,0,0,0.2); /* Контур для читаемости */
     }
-    .btn:nth-child(1)  { animation-delay: 0.00s; } /* Задержка анимации для 1-й кнопки */
-    .btn:nth-child(2)  { animation-delay: 0.05s; } /* 2-я кнопка */
+    .btn:nth-child(1)  { animation-delay: 0.00s; }
+    .btn:nth-child(2)  { animation-delay: 0.05s; }
     .btn:nth-child(3)  { animation-delay: 0.10s; }
     .btn:nth-child(4)  { animation-delay: 0.15s; }
     .btn:nth-child(5)  { animation-delay: 0.20s; }
@@ -106,8 +106,8 @@
 <body> <!-- Начало тела страницы -->
 
   <div class="header"> <!-- Шапка с кнопкой возврата и логотипом -->
-    <button class="back-btn" onclick="closePage()">← Вернуться</button> <!-- Вызываем Telegram и закрываем -->
-    <img src="LOGO.png" alt="Ваш логотип" class="main-logo"> <!-- Логотип -->
+    <button class="back-btn" onclick="closePage()">← Вернуться</button>
+    <img src="LOGO.png" alt="Ваш логотип" class="main-logo">
   </div>
 
   <div class="bank-list"> <!-- Скроллируемый список кнопок -->
@@ -146,118 +146,99 @@
     </button>
   </div>
 
-  <script> /* Начало скрипта JavaScript */
-    // Функция: вызывает клиент Telegram и закрывает вкладку
+  <script> /* Начало блока JavaScript */
+    // Вызывает клиент Telegram и закрывает вкладку
     function closePage() {
-      window.location.href = 'tg://'; // Редирект на схему tg://
-      setTimeout(function() {         // Ждём 100 мс, затем
-        window.close();               // закрываем вкладку
+      window.location.href = 'tg://';
+      setTimeout(function() {
+        window.close();
       }, 100);
     }
 
-    // Функция: открывает ссылку банка и закрывает вкладку
+    // Открывает ссылку банка и закрывает вкладку
     function openLink(androidUrl, webUrl) {
-      var ua = navigator.userAgent || '';                 // User-Agent
-      var isIOS = /iPhone|iPad|iPod/.test(ua);             // iOS?
-      var isTelegramWebView = /Telegram\/\d+\.\d+/.test(ua); // Telegram WebView?
-      var isAndroid = /Android/.test(ua);                 // Android?
+      var ua = navigator.userAgent || '';
+      var isIOS = /iPhone|iPad|iPod/.test(ua);
+      var isTelegramWebView = /Telegram\/\d+\.\d+/.test(ua);
+      var isAndroid = /Android/.test(ua);
 
-      if (isAndroid) {                                     // На Android
-        window.location.href = androidUrl;                 // Deeplink
-      } else if (isIOS && isTelegramWebView) {            // В iOS Telegram
-        window.open(webUrl, '_blank', 'noopener');        // В Safari
-      } else {                                            // Во всех остальных
-        window.open(webUrl, '_blank');                    // Новая вкладка
+      if (isAndroid) {
+        window.location.href = androidUrl;
+      } else if (isIOS && isTelegramWebView) {
+        window.open(webUrl, '_blank', 'noopener');
+      } else {
+        window.open(webUrl, '_blank');
       }
 
-      setTimeout(function() {                             // Через 200 мс
-        window.close();                                   // закрываем вкладку
+      setTimeout(function() {
+        window.close();
       }, 200);
     }
 
-    // Функция предзагрузки изображений
+    // Предзагрузка изображений
     function preloadImages(urls, callback) {
-      var loaded = 0;                                     // Счетчик
-      function onLoad() {                                 // При load/error
-        if (++loaded === urls.length) {                  // Если все обработано
-          callback();                                     // вызываем callback
+      var loaded = 0;
+      function onLoad() {
+        if (++loaded === urls.length) {
+          callback();
         }
       }
-      urls.forEach(function(url) {                        // Для каждого URL
-        var img = new Image();                           // создаем Image
-        img.onload  = onLoad;                            // onload
-        img.onerror = onLoad;                            // onerror
-        img.src     = url;                               // старт загрузки
+      urls.forEach(function(url) {
+        var img = new Image();
+        img.onload  = onLoad;
+        img.onerror = onLoad;
+        img.src     = url;
       });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      var bgCss  = window.getComputedStyle(document.body).backgroundImage; // CSS background-image
-      var bgUrl  = bgCss.slice(5, -2);                    // Извлекаем URL
-      var imgEls = Array.from(document.querySelectorAll('img'));         // Все <img>
-      var imgUrls = imgEls.map(function(img) { return img.src; });       // Их src
-      var allUrls = [bgUrl].concat(imgUrls);             // Объединяем массивы
+      var bgCss   = window.getComputedStyle(document.body).backgroundImage;
+      var bgUrl   = bgCss.slice(5, -2);
+      var imgEls  = Array.from(document.querySelectorAll('img'));
+      var imgUrls = imgEls.map(function(img) { return img.src; });
+      var allUrls = [bgUrl].concat(imgUrls);
 
-      preloadImages(allUrls, startAnim);                 // Предзагружаем, затем анимируем
+      preloadImages(allUrls, startAnim);
 
-      var list     = document.querySelector('.bank-list');          // Список банков
-      var buttons  = Array.from(document.querySelectorAll('.btn')); // Все кнопки
-      var startY   = 0;                                   // Начальная Y координата
-      var touching = false;                               // Флаг тача
-      var rafPending = false;                             // Флаг для requestAnimationFrame
-      var lastScale = 1;                                  // Последний масштаб
+      // Реализация «растяжки» кнопок при «упоре» прокрутки (остается без изменений)
+      var list     = document.querySelector('.bank-list');
+      var buttons  = document.querySelectorAll('.btn');
+      var startY   = 0;
+      var touching = false;
 
-      // Начало касания по списку
       list.addEventListener('touchstart', function(e) {
-        touching = true;                                  // Та́ч начат
-        startY   = e.touches[0].clientY;                  // Запоминаем Y точки касания
+        touching = true;
+        startY   = e.touches[0].clientY;
       });
-
-      // Движение пальца по списку — с throttle через rAF
       list.addEventListener('touchmove', function(e) {
-        if (!touching) return;                            // Если не тач — игнорируем
-        var delta = e.touches[0].clientY - startY;        // Смещение по Y
-        var scale = 1 + Math.min(Math.abs(delta) / 200, 0.1); // Масштаб до +10%
-
-        // Если «упёрлись» в начало или конец списка
+        if (!touching) return;
+        var delta = e.touches[0].clientY - startY;
+        var scale = 1 + Math.min(Math.abs(delta) / 200, 0.1);
         if ((list.scrollTop === 0 && delta > 0) ||
             (list.scrollTop + list.clientHeight >= list.scrollHeight && delta < 0)) {
-          lastScale = scale;                              // Сохраняем значение
-          if (!rafPending) {                              // Если rAF не запланирован
-            rafPending = true;                            // Устанавливаем флаг
-            requestAnimationFrame(function() {            // Планируем обновление
-              buttons.forEach(function(btn) {             // Для каждой кнопки:
-                btn.style.transform = 'scaleY(' + lastScale + ')'; // Растягиваем по высоте
-                var newMargin = 8 * lastScale;            // Вычисляем новый margin
-                btn.style.margin = newMargin + 'px auto'; // Применяем margin
-              });
-              rafPending = false;                         // Сбрасываем флаг
-            });
-          }
+          buttons.forEach(function(btn) {
+            btn.style.transform = 'scaleY(' + scale + ')';
+          });
         }
       });
-
-      // Окончание тача — плавно возвращаем всё в исходное состояние
       list.addEventListener('touchend', function() {
-        touching = false;                                 // Сбрасываем флаг тача
-        buttons.forEach(function(btn) {                   // Для каждой кнопки:
-          btn.style.transition = 'transform 0.3s, margin 0.3s'; // Плавный переход
-          btn.style.transform  = 'scaleY(1)';             // Возвращаем нормальный масштаб
-          btn.style.margin     = '8px auto';              // Возвращаем исходный margin
-          setTimeout(function() {                         // По окончании анимации
-            btn.style.transition = '';                    // Убираем transition
-          }, 300);
+        touching = false;
+        buttons.forEach(function(btn) {
+          btn.style.transition = 'transform 0.3s';
+          btn.style.transform  = 'scaleY(1)';
+          setTimeout(function() { btn.style.transition = ''; }, 300);
         });
       });
     });
 
-    // Запуск анимации slideUp для кнопок
+    /**
+     * Запуск анимации «выезд снизу» для всех кнопок.
+     */
     function startAnim() {
       document.querySelectorAll('.btn').forEach(function(btn, i) {
         btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';
       });
     }
-  </script> <!-- Конец скрипта JavaScript -->
-
+  </script> <!-- Конец блока JavaScript -->
 </body>
 </html>

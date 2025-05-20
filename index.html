@@ -6,89 +6,89 @@
   <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок вкладки браузера -->
   <style> /* Начало блока стилей CSS */
     html, body { /* Сбрасываем отступы и задаём высоту для html и body */
-      margin: 0; /* Убираем внешние отступы */
-      padding: 0; /* Убираем внутренние отступы */
-      height: 100%; /* Высота 100% от окна браузера */
+      margin: 0;
+      padding: 0;
+      height: 100%;
     }
     body { /* Стили для тега body — фон и флекс-контейнер */
-      background-image: url('background.png'); /* Фоновой рисунок */
-      background-size: cover; /* Покрытие всего экрана */
-      background-position: center; /* Центрирование фона */
-      display: flex; /* Flex-контейнер */
-      flex-direction: column; /* Элементы по вертикали */
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
     }
     .header { /* Стили для шапки страницы */
-      display: flex; /* Flex-контейнер */
-      align-items: center; /* Вертикальное выравнивание */
-      padding: 10px; /* Внутренний отступ */
-      background-color: rgba(255,255,255,0.5); /* Полупрозрачный фон */
-      backdrop-filter: blur(6px); /* Размытие фона позади */
-      -webkit-backdrop-filter: blur(6px); /* Для Safari */
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: rgba(255,255,255,0.5);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
     .back-btn { /* Кнопка «← Вернуться» */
-      border: none; /* Без рамки */
-      background: none; /* Прозрачный фон */
-      font-size: 16px; /* Размер шрифта */
-      color: #333; /* Цвет текста */
-      cursor: pointer; /* Курсор «рука» */
-      margin-right: auto; /* Отодвигает кнопку влево */
+      border: none;
+      background: none;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      margin-right: auto;
     }
     .main-logo { /* Логотип в шапке */
-      width: 80px; /* Фиксированная ширина */
-      height: auto; /* Автовысота */
+      width: 80px;
+      height: auto;
     }
     .bank-list { /* Контейнер со списком банков */
-      flex: 1; /* Занимает всё доступное пространство */
-      overflow-y: auto; /* Вертикальная прокрутка */
-      padding: 10px; /* Внутренние отступы */
-      -webkit-overflow-scrolling: touch; /* Плавная прокрутка iOS */
-      overscroll-behavior: contain; /* Отключаем системный «упор» */
-      overscroll-behavior-y: contain; /* Отключаем вертикальный «упор» */
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      overscroll-behavior-y: contain;
     }
     @keyframes slideUp { /* Ключевая анимация «выезд снизу» */
       0% {
-        transform: translateY(100px); /* Исходный сдвиг вниз */
-        opacity: 0; /* Прозрачность 0 */
+        transform: translateY(100px);
+        opacity: 0;
       }
       80% {
-        transform: translateY(-6px); /* Лёгкий отскок вверх */
-        opacity: 1; /* Полная видимость */
+        transform: translateY(-6px);
+        opacity: 1;
       }
       100% {
-        transform: translateY(0); /* Возвращение в исходное положение */
-        opacity: 1; /* Остаётся видимым */
+        transform: translateY(0);
+        opacity: 1;
       }
     }
     .btn { /* Общие стили кнопок банков */
-      width: 100%; /* По ширине контейнера */
-      max-width: 500px; /* Не более 500px */
-      margin: 8px auto; /* Отступы 8px сверху/снизу, центрирование */
-      padding: 12px; /* Внутренний отступ */
-      border: none; /* Без рамки */
-      border-radius: 12px; /* Скруглённые углы */
-      background: linear-gradient( /* Градиент от белого к прозрачному */
+      width: 100%;
+      max-width: 500px;
+      margin: 8px auto;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(
         to right,
-        white 0%, white 15%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%
+        white 0%, white 15%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0) 100%
       );
-      backdrop-filter: blur(6px); /* Размытие фона под кнопкой */
-      -webkit-backdrop-filter: blur(6px); /* Для Safari */
-      cursor: pointer; /* Курсор «рука» */
-      display: flex; /* Flex для иконки и текста */
-      align-items: center; /* Центрирование по вертикали */
-      opacity: 0; /* Скрыты до анимации */
-      transform: translateY(100px); /* Сдвиг вниз перед анимацией */
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(100px);
     }
     .btn img { /* Иконка внутри кнопки */
-      width: 32px; /* Фиксированная ширина */
-      height: auto; /* Автовысота */
-      margin-right: 12px; /* Отступ справа */
+      width: 32px;
+      height: auto;
+      margin-right: 12px;
     }
     .btn-text { /* Текст внутри кнопки */
-      font-family: 'Helvetica Neue', Arial, sans-serif; /* Шрифт */
-      font-weight: bold; /* Жирное начертание */
-      font-size: 16px; /* Размер текста */
-      color: #000; /* Чёрный цвет */
-      text-shadow: 0 0 1px rgba(0,0,0,0.2); /* Контур для читаемости */
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-weight: bold;
+      font-size: 16px;
+      color: #000;
+      text-shadow: 0 0 1px rgba(0,0,0,0.2);
     }
     .btn:nth-child(1)  { animation-delay: 0.00s; }
     .btn:nth-child(2)  { animation-delay: 0.05s; }
@@ -147,15 +147,22 @@
   </div>
 
   <script> /* Начало блока JavaScript */
-    // Вызывает клиент Telegram и закрывает вкладку
+    // Функция «Вернуться»: если доступно API WebApp — закрыть WebApp,
+    // иначе вызвать Telegram и закрыть вкладку.
     function closePage() {
-      window.location.href = 'tg://';
-      setTimeout(function() {
-        window.close();
-      }, 100);
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
+        Telegram.WebApp.close();
+      } else {
+        window.location.href = 'tg://';
+        setTimeout(function() {
+          window.close();
+        }, 100);
+      }
     }
 
-    // Открывает ссылку банка и закрывает вкладку
+    // Открывает ссылку банка: на Android — Deeplink,
+    // в iOS/Telegram WebView — window.open (Safari),
+    // в остальных — новая вкладка.
     function openLink(androidUrl, webUrl) {
       var ua = navigator.userAgent || '';
       var isIOS = /iPhone|iPad|iPod/.test(ua);
@@ -165,7 +172,7 @@
       if (isAndroid) {
         window.location.href = androidUrl;
       } else if (isIOS && isTelegramWebView) {
-        window.open(webUrl, '_blank', 'noopener');
+        window.open(webUrl);
       } else {
         window.open(webUrl, '_blank');
       }
@@ -179,28 +186,23 @@
     function preloadImages(urls, callback) {
       var loaded = 0;
       function onLoad() {
-        if (++loaded === urls.length) {
-          callback();
-        }
+        if (++loaded === urls.length) callback();
       }
       urls.forEach(function(url) {
         var img = new Image();
-        img.onload  = onLoad;
-        img.onerror = onLoad;
-        img.src     = url;
+        img.onload = img.onerror = onLoad;
+        img.src = url;
       });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      var bgCss   = window.getComputedStyle(document.body).backgroundImage;
-      var bgUrl   = bgCss.slice(5, -2);
-      var imgEls  = Array.from(document.querySelectorAll('img'));
-      var imgUrls = imgEls.map(function(img) { return img.src; });
-      var allUrls = [bgUrl].concat(imgUrls);
+      var bgCss  = window.getComputedStyle(document.body).backgroundImage;
+      var bgUrl  = bgCss.slice(5, -2);
+      var imgs   = Array.from(document.querySelectorAll('img'));
+      var urls   = [bgUrl].concat(imgs.map(i => i.src));
+      preloadImages(urls, startAnim);
 
-      preloadImages(allUrls, startAnim);
-
-      // Реализация «растяжки» кнопок при «упоре» прокрутки (остается без изменений)
+      // «Растяжка» кнопок при упоре прокрутки
       var list     = document.querySelector('.bank-list');
       var buttons  = document.querySelectorAll('.btn');
       var startY   = 0;
@@ -231,9 +233,7 @@
       });
     });
 
-    /**
-     * Запуск анимации «выезд снизу» для всех кнопок.
-     */
+    // Запуск анимации «выезд снизу» для кнопок
     function startAnim() {
       document.querySelectorAll('.btn').forEach(function(btn, i) {
         btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';

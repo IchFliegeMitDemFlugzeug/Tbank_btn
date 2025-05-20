@@ -1,31 +1,31 @@
-<!DOCTYPE html> <!-- Объявляем документ как HTML5 -->
-<html lang="ru"> <!-- Устанавливаем язык страницы: русский -->
-<head> <!-- Начало секции метаданных -->
-  <meta charset="UTF-8"> <!-- Кодировка документа: UTF-8 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивность под ширину экрана -->
-  <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок вкладки браузера -->
-  <style> /* Начало блока стилей */
-    html, body { /* Сброс отступов и полная высота */
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Выберите Ваш банк для оплаты</title>
+  <style>
+    html, body {
       margin: 0;
       padding: 0;
       height: 100%;
     }
-    body { /* Фон и флекс-контейнер */
+    body {
       background-image: url('background.png');
       background-size: cover;
       background-position: center;
       display: flex;
       flex-direction: column;
     }
-    .header { /* Шапка с полупрозрачным фоном и размытием */
+    .header {
       display: flex;
       align-items: center;
       padding: 10px;
       background-color: rgba(255,255,255,0.5);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
-    .back-btn { /* Кнопка «← Вернуться» */
+    .back-btn {
       border: none;
       background: none;
       font-size: 16px;
@@ -33,17 +33,17 @@
       cursor: pointer;
       margin-right: auto;
     }
-    .main-logo { /* Ваш логотип в шапке */
+    .main-logo {
       width: 80px;
       height: auto;
     }
-    .bank-list { /* Контейнер со списком банков */
+    .bank-list {
       flex: 1;
       overflow-y: auto;
       padding: 10px;
       -webkit-overflow-scrolling: touch;
     }
-    @keyframes slideUp { /* Анимация «выезд снизу» */
+    @keyframes slideUp {
       0% {
         transform: translateY(100px);
         opacity: 0;
@@ -57,18 +57,17 @@
         opacity: 1;
       }
     }
-    .btn { /* Общие стили кнопок банков */
+    .btn {
       width: 100%;
       max-width: 500px;
       margin: 8px auto;
       padding: 12px;
       border: none;
       border-radius: 12px;
-      /* Градиент: 0–15% белый, 15–25% плавный переход, 25–100% прозрачный */
       background: linear-gradient(
         to right,
         white 0%,
-        white 8%,
+        white 15%,
         rgba(255,255,255,0.2) 50%,
         rgba(255,255,255,0) 100%
       );
@@ -77,22 +76,21 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      opacity: 0;               /* Скрываем до анимации */
-      transform: translateY(100px); /* И смещаем вниз */
+      opacity: 0;
+      transform: translateY(100px);
     }
-    .btn img { /* Логотип внутри кнопки */
+    .btn img {
       width: 32px;
       height: auto;
       margin-right: 12px;
     }
-    .btn-text { /* Текст на кнопке */
+    .btn-text {
       font-family: 'Helvetica Neue', Arial, sans-serif;
       font-weight: bold;
       font-size: 16px;
       color: #000;
-      text-shadow: 0 0 1px rgba(0,0,0,0.3);
+      text-shadow: 0 0 1px rgba(0,0,0,0.8);
     }
-    /* Задержки старта анимации для каждой кнопки */
     .btn:nth-child(1)  { animation-delay: 0.00s; }
     .btn:nth-child(2)  { animation-delay: 0.05s; }
     .btn:nth-child(3)  { animation-delay: 0.10s; }
@@ -104,84 +102,140 @@
     .btn:nth-child(9)  { animation-delay: 0.40s; }
     .btn:nth-child(10) { animation-delay: 0.45s; }
     .btn:nth-child(11) { animation-delay: 0.50s; }
-  </style> <!-- Конец блока стилей -->
+  </style>
 </head>
-<body> <!-- Начало тела документа -->
+<body>
 
-  <!-- Шапка страницы -->
   <div class="header">
     <button class="back-btn" onclick="closePage()">← Вернуться</button>
     <img src="LOGO.png" alt="Ваш логотип" class="main-logo">
   </div>
 
-  <!-- Список всех 11 банков -->
   <div class="bank-list">
-    <button class="btn" onclick="openLink('https://www.sberbank.com/sms/pbpn?requisiteNumber=79309791051')">
-      <img src="LOGO_SBER.png" alt="Сбербанк"><span class="btn-text">Сбербанк</span>
+    <!-- 1. Сбербанк -->
+    <button class="btn"
+      onclick="openLink(
+        'sberpayapp://', 
+        'https://online.sberbank.ru/CSAFront/index.do'
+      )">
+      <img src="LOGO_SBER.png" alt="Сбербанк">
+      <span class="btn-text">Сбербанк</span>
     </button>
-    <button class="btn" onclick="openLink('alfabank://account')">
-      <img src="LOGO_ALFABANK.png" alt="Альфа-Банк"><span class="btn-text">Альфа-Банк</span>
+    <!-- 2. Альфа-Банк -->
+    <button class="btn"
+      onclick="openLink(
+        'alfabank://account', 
+        'https://web.alfabank.ru/dashboard'
+      )">
+      <img src="LOGO_ALFABANK.png" alt="Альфа-Банк">
+      <span class="btn-text">Альфа-Банк</span>
     </button>
-    <button class="btn" onclick="openLink('tbank://main')">
-      <img src="LOGO_TBANK.png" alt="Т-Банк"><span class="btn-text">Т-Банк</span>
+    <!-- 3. Т-Банк -->
+    <button class="btn"
+      onclick="openLink(
+        'tbank://main', 
+        'https://www.tbank.ru/mybank/'
+      )">
+      <img src="LOGO_TBANK.png" alt="Т-Банк">
+      <span class="btn-text">Т-Банк</span>
     </button>
-    <button class="btn" onclick="openLink('rshbmbfl://')">
-      <img src="LOGO_RSHB.png" alt="Россельхозбанк"><span class="btn-text">Россельхозбанк</span>
+    <!-- 4. Россельхозбанк -->
+    <button class="btn"
+      onclick="openLink(
+        'rshbmbfl://', 
+        'https://online.rshb.ru/cas-auth/index?forceAuth=true'
+      )">
+      <img src="LOGO_RSHB.png" alt="Россельхозбанк">
+      <span class="btn-text">Россельхозбанк</span>
     </button>
-    <button class="btn" onclick="openLink('gpbapp://')">
-      <img src="LOGO_GAZPROMBANK.png" alt="Газпромбанк"><span class="btn-text">Газпромбанк</span>
+    <!-- 5. Газпромбанк -->
+    <button class="btn"
+      onclick="openLink(
+        'gpbapp://', 
+        'https://ib.online.gpb.ru/'
+      )">
+      <img src="LOGO_GAZPROMBANK.png" alt="Газпромбанк">
+      <span class="btn-text">Газпромбанк</span>
     </button>
-    <button class="btn" onclick="openLink('psbmobile://auth/accounts')">
-      <img src="LOGO_PSB.png" alt="ПСБ"><span class="btn-text">Банк ПСБ</span>
+    <!-- 6. ПСБ -->
+    <button class="btn"
+      onclick="openLink(
+        'psbmobile://auth/accounts', 
+        'https://ib.psbank.ru/login'
+      )">
+      <img src="LOGO_PSB.png" alt="ПСБ">
+      <span class="btn-text">ПСБ</span>
     </button>
-    <button class="btn" onclick="openLink('mkb2://deeplink')">
-      <img src="LOGO_MKB.png" alt="МКБ"><span class="btn-text">МКБ</span>
+    <!-- 7. МКБ -->
+    <button class="btn"
+      onclick="openLink(
+        'mkb2://deeplink', 
+        'https://online.mkb.ru/login'
+      )">
+      <img src="LOGO_MKB.png" alt="МКБ">
+      <span class="btn-text">МКБ</span>
     </button>
-    <button class="btn" onclick="openLink('vtb://vtb.ru/i/')">
-      <img src="LOGO_VTB.png" alt="ВТБ"><span class="btn-text">ВТБ</span>
+    <!-- 8. ВТБ -->
+    <button class="btn"
+      onclick="openLink(
+        'vtb://vtb.ru/i/', 
+        'https://online.vtb.ru/login'
+      )">
+      <img src="LOGO_VTB.png" alt="ВТБ">
+      <span class="btn-text">ВТБ</span>
     </button>
-    <button class="btn" onclick="openLink('mtsmoney://')">
-      <img src="LOGO_MTSBANK.png" alt="МТС Банк"><span class="btn-text">МТС Банк</span>
+    <!-- 9. МТС Банк -->
+    <button class="btn"
+      onclick="openLink(
+        'mtsmoney://', 
+        'https://sso.mtsbank.ru/login/mtsmoney/auth/'
+      )">
+      <img src="LOGO_MTSBANK.png" alt="МТС Банк">
+      <span class="btn-text">МТС Банк</span>
     </button>
-    <button class="btn" onclick="openLink('bank100000000016://sbpay')">
-      <img src="LOGO_POCHTABANK.png" alt="Почта Банк"><span class="btn-text">Почта Банк</span>
+    <!-- 10. Почта Банк -->
+    <button class="btn"
+      onclick="openLink(
+        'bank100000000016://sbpay', 
+        'https://my.pochtabank.ru/login'
+      )">
+      <img src="LOGO_POCHTABANK.png" alt="Почта Банк">
+      <span class="btn-text">Почта Банк</span>
     </button>
-    <button class="btn" onclick="openLink('ompshared://')">
-      <img src="LOGO_SOVKOMBANK.png" alt="Совкомбанк"><span class="btn-text">Совкомбанк</span>
+    <!-- 11. Совкомбанк -->
+    <button class="btn"
+      onclick="openLink(
+        'ompshared://', 
+        'https://bk.sovcombank.ru/ru/html/login.html'
+      )">
+      <img src="LOGO_SOVKOMBANK.png" alt="Совкомбанк">
+      <span class="btn-text">Совкомбанк</span>
     </button>
   </div>
 
-  <script> /* Начало блока JavaScript */
+  <script>
     function closePage() {
       if (window.history.length > 1) history.back();
       else window.location.href = 'tg://';
     }
 
-    function openLink(url) {
-      var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
-      if (isIOS) showIOSAlert();
-      else window.location.href = url;
+    function openLink(androidUrl, webUrl) {
+      var isAndroid = /Android/.test(navigator.userAgent);
+      var targetUrl = isAndroid ? androidUrl : webUrl;
+
+      if (isAndroid) {
+        // Запускаем deeplink
+        window.location.href = targetUrl;
+      } else {
+        // Открываем внешним браузером
+        window.open(targetUrl, '_blank');
+      }
+      // Через 5 секунд закрываем встроенный браузер Telegram
+      setTimeout(closePage, 5000);
     }
 
     function showIOSAlert() {
-      var overlay = document.createElement('div');
-      overlay.style.cssText =
-        'position:fixed;top:0;left:0;width:100%;height:100%;' +
-        'background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;';
-      var box = document.createElement('div');
-      box.style.cssText = 'background:#fff;padding:20px;border-radius:8px;text-align:center;';
-      var msg = document.createElement('p');
-      msg.textContent = 'Вы зашли с айфона';
-      msg.style.marginBottom = '20px';
-      var btn = document.createElement('button');
-      btn.textContent = 'ОК';
-      btn.style.cssText =
-        'padding:10px 20px;border:none;border-radius:4px;cursor:pointer;' +
-        'background:#007aff;color:#fff;';
-      btn.onclick = closePage;
-      box.append(msg, btn);
-      overlay.append(box);
-      document.body.append(overlay);
+      /* не используется, т.к. вместо alert для iOS грузим web-ссылки */
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -192,7 +246,6 @@
       function checkAll() {
         if (++loaded === imgs.length) startAnim();
       }
-
       imgs.forEach(function(img) {
         if (img.complete) checkAll();
         else img.addEventListener('load', checkAll);
@@ -206,34 +259,25 @@
         isTouch = true;
         startY = e.touches[0].clientY;
       });
-
       list.addEventListener('touchmove', function(e) {
         if (!isTouch) return;
         var delta = e.touches[0].clientY - startY,
-            scale;
+            scale = 1 + Math.min(Math.abs(delta) / 200, 0.1),
+            transform = 'scaleY(' + scale + ')';
 
-        // Если вверху и тянут вниз
-        if (list.scrollTop === 0 && delta > 0) {
-          scale = 1 + Math.min(delta / 200, 0.1);
+        if ((list.scrollTop === 0 && delta > 0) ||
+            (list.scrollTop + list.clientHeight >= list.scrollHeight && delta < 0)) {
           buttons.forEach(function(btn) {
-            btn.style.transform = 'scaleY(' + scale + ')';
-          });
-        }
-        // Если внизу и тянут вверх
-        else if (list.scrollTop + list.clientHeight >= list.scrollHeight && delta < 0) {
-          scale = 1 + Math.min(-delta / 200, 0.1);
-          buttons.forEach(function(btn) {
-            btn.style.transform = 'scaleY(' + scale + ')';
+            btn.style.transform = transform;
           });
         }
       });
-
       list.addEventListener('touchend', function() {
         isTouch = false;
         buttons.forEach(function(btn) {
           btn.style.transition = 'transform 0.3s';
           btn.style.transform = 'scaleY(1)';
-          setTimeout(function() { btn.style.transition = ''; }, 300);
+          setTimeout(function(){ btn.style.transition = ''; }, 300);
         });
       });
     });
@@ -243,7 +287,6 @@
         btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';
       });
     }
-  </script> <!-- Конец блока JavaScript -->
-
+  </script>
 </body>
 </html>

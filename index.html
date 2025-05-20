@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Адаптивность под ширину экрана -->
   <title>Выберите Ваш банк для оплаты</title> <!-- Заголовок вкладки браузера -->
   <style> /* Начало блока стилей CSS */
-    html, body { /* Сбрасываем отступы и задаём высоту для html и body */
+    html, body { /* Сбрасываем отступы и задаём высоту */
       margin: 0;
       padding: 0;
       height: 100%;
     }
-    body { /* Стили для тега body — фон и флекс-контейнер */
+    body { /* Флекс-контейнер и фон страницы */
+      display: flex;
+      flex-direction: column;
       background-image: url('background.png');
       background-size: cover;
       background-position: center;
-      display: flex;
-      flex-direction: column;
     }
-    .header { /* Стили для шапки страницы */
+    .header { /* Шапка с полупрозрачным фоном */
       display: flex;
       align-items: center;
       padding: 10px;
@@ -37,7 +37,7 @@
       width: 80px;
       height: auto;
     }
-    .bank-list { /* Контейнер со списком банков */
+    .bank-list { /* Скроллируемый список банков */
       flex: 1;
       overflow-y: auto;
       padding: 10px;
@@ -45,21 +45,14 @@
       overscroll-behavior: contain;
       overscroll-behavior-y: contain;
     }
-    @keyframes slideUp { /* Ключевая анимация «выезд снизу» */
-      0% {
-        transform: translateY(100px);
-        opacity: 0;
-      }
-      80% {
-        transform: translateY(-6px);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
+    @keyframes slideUp { /* Анимация «выезд снизу» */
+      0%   { transform: translateY(100px); opacity: 0; }
+      80%  { transform: translateY(-6px);  opacity: 1; }
+      100% { transform: translateY(0);     opacity: 1; }
     }
-    .btn { /* Общие стили кнопок банков */
+    .btn { /* Общий стиль кнопок банков */
+      display: flex;
+      align-items: center;
       width: 100%;
       max-width: 500px;
       margin: 8px auto;
@@ -68,13 +61,11 @@
       border-radius: 12px;
       background: linear-gradient(
         to right,
-        white 0%, white 15%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0) 100%
+        white 0%, white 15%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%
       );
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
       cursor: pointer;
-      display: flex;
-      align-items: center;
       opacity: 0;
       transform: translateY(100px);
     }
@@ -90,6 +81,7 @@
       color: #000;
       text-shadow: 0 0 1px rgba(0,0,0,0.2);
     }
+    /* Задержки старта анимации для кнопок */
     .btn:nth-child(1)  { animation-delay: 0.00s; }
     .btn:nth-child(2)  { animation-delay: 0.05s; }
     .btn:nth-child(3)  { animation-delay: 0.10s; }
@@ -111,48 +103,59 @@
   </div>
 
   <div class="bank-list"> <!-- Скроллируемый список кнопок -->
-    <button class="btn" onclick="openLink('sberpayapp://', 'https://online.sberbank.ru/CSAFront/index.do')">
+    <button class="btn" onclick="openLink('sberpayapp://',     'https://online.sberbank.ru/CSAFront/index.do')">
       <img src="LOGO_SBER.png" alt="Сбербанк"><span class="btn-text">Сбербанк</span>
     </button>
     <button class="btn" onclick="openLink('alfabank://account', 'https://web.alfabank.ru/dashboard')">
       <img src="LOGO_ALFABANK.png" alt="Альфа-Банк"><span class="btn-text">Альфа-Банк</span>
     </button>
-    <button class="btn" onclick="openLink('tbank://main', 'https://www.tbank.ru/mybank/')">
+    <button class="btn" onclick="openLink('tbank://main',      'https://www.tbank.ru/mybank/')">
       <img src="LOGO_TBANK.png" alt="Т-Банк"><span class="btn-text">Т-Банк</span>
     </button>
-    <button class="btn" onclick="openLink('rshbmbfl://', 'https://online.rshb.ru/cas-auth/index?forceAuth=true')">
+    <button class="btn" onclick="openLink('rshbmbfl://',       'https://online.rshb.ru/cas-auth/index?forceAuth=true')">
       <img src="LOGO_RSHB.png" alt="Россельхозбанк"><span class="btn-text">Россельхозбанк</span>
     </button>
-    <button class="btn" onclick="openLink('gpbapp://', 'https://ib.online.gpb.ru/')">
+    <button class="btn" onclick="openLink('gpbapp://',         'https://ib.online.gpb.ru/')">
       <img src="LOGO_GAZPROMBANK.png" alt="Газпромбанк"><span class="btn-text">Газпромбанк</span>
     </button>
-    <button class="btn" onclick="openLink('psbmobile://auth/accounts', 'https://ib.psbank.ru/settings')">
+    <button class="btn" onclick="openLink('psbmobile://auth/accounts','https://ib.psbank.ru/settings')">
       <img src="LOGO_PSB.png" alt="ПСБ"><span class="btn-text">ПСБ</span>
     </button>
-    <button class="btn" onclick="openLink('mkb2://deeplink', 'https://online.mkb.ru/login')">
+    <button class="btn" onclick="openLink('mkb2://deeplink',   'https://online.mkb.ru/login')">
       <img src="LOGO_MKB.png" alt="МКБ"><span class="btn-text">МКБ</span>
     </button>
-    <button class="btn" onclick="openLink('vtb://vtb.ru/i/', 'https://online.vtb.ru/login')">
+    <button class="btn" onclick="openLink('vtb://vtb.ru/i/',   'https://online.vtb.ru/login')">
       <img src="LOGO_VTB.png" alt="ВТБ"><span class="btn-text">ВТБ</span>
     </button>
-    <button class="btn" onclick="openLink('mtsmoney://', 'https://sso.mtsbank.ru/login/mtsmoney/auth/')">
+    <button class="btn" onclick="openLink('mtsmoney://',       'https://sso.mtsbank.ru/login/mtsmoney/auth/')">
       <img src="LOGO_MTSBANK.png" alt="МТС Банк"><span class="btn-text">МТС Банк</span>
     </button>
-    <button class="btn" onclick="openLink('bank100000000016://sbpay', 'https://my.pochtabank.ru/login')">
+    <button class="btn" onclick="openLink('bank100000000016://sbpay','https://my.pochtabank.ru/login')">
       <img src="LOGO_POCHTABANK.png" alt="Почта Банк"><span class="btn-text">Почта Банк</span>
     </button>
-    <button class="btn" onclick="openLink('ompshared://', 'https://bk.sovcombank.ru/ru/html/login.html')">
+    <button class="btn" onclick="openLink('ompshared://',      'https://bk.sovcombank.ru/ru/html/login.html')">
       <img src="LOGO_SOVKOMBANK.png" alt="Совкомбанк"><span class="btn-text">Совкомбанк</span>
     </button>
   </div>
 
   <script> /* Начало блока JavaScript */
-    // Функция «Вернуться»: если доступно API WebApp — закрыть WebApp,
-    // иначе вызвать Telegram и закрыть вкладку.
+    /**
+     * Закрывает WebView Telegram на iOS или сворачивает/закрывает вкладку.
+     */
     function closePage() {
-      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
+      var ua = navigator.userAgent || '';
+      var isIOS = /iPhone|iPad|iPod/.test(ua);
+      var isTelegramWebView = /Telegram\/\d+\.\d+/.test(ua);
+
+      if (isIOS && isTelegramWebView) {
+        // На iOS в Telegram WebView — возвращаемся назад в истории,
+        // чтобы WebView закрылся и вернул пользователя в чат.
+        history.back();
+      } else if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
+        // Внутри Telegram WebApp API — используем встроенный метод.
         Telegram.WebApp.close();
       } else {
+        // Во всех остальных случаях пробуем схема tg:// + window.close.
         window.location.href = 'tg://';
         setTimeout(function() {
           window.close();
@@ -160,9 +163,13 @@
       }
     }
 
-    // Открывает ссылку банка: на Android — Deeplink,
-    // в iOS/Telegram WebView — window.open (Safari),
-    // в остальных — новая вкладка.
+    /**
+     * Открывает ссылку банка:
+     * 1) на Android — Deeplink через location.href;
+     * 2) на iOS в Telegram WebView — открывает в Safari, форсируя внешний браузер;
+     * 3) в остальных — в новой вкладке.
+     * После открытия через 200 мс пытается закрыть текущую страницу.
+     */
     function openLink(androidUrl, webUrl) {
       var ua = navigator.userAgent || '';
       var isIOS = /iPhone|iPad|iPod/.test(ua);
@@ -170,19 +177,32 @@
       var isAndroid = /Android/.test(ua);
 
       if (isAndroid) {
+        // На Android — стандартный Deeplink
         window.location.href = androidUrl;
-      } else if (isIOS && isTelegramWebView) {
-        window.open(webUrl);
-      } else {
+      }
+      else if (isIOS && isTelegramWebView) {
+        // На iOS в Telegram Browser: создаём <a> с target="_blank", кликаем,
+        // чтобы WebView передал ссылку в Safari.
+        var a = document.createElement('a');
+        a.href = webUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      else {
+        // Во всех остальных случаях — новая вкладка
         window.open(webUrl, '_blank');
       }
 
+      // Закрываем страницу через 200 мс
       setTimeout(function() {
-        window.close();
+        closePage();
       }, 200);
     }
 
-    // Предзагрузка изображений
+    // Предзагрузка изображений, затем анимация кнопок
     function preloadImages(urls, callback) {
       var loaded = 0;
       function onLoad() {
@@ -195,14 +215,17 @@
       });
     }
 
+    // После загрузки DOM
     document.addEventListener('DOMContentLoaded', function() {
-      var bgCss  = window.getComputedStyle(document.body).backgroundImage;
-      var bgUrl  = bgCss.slice(5, -2);
-      var imgs   = Array.from(document.querySelectorAll('img'));
-      var urls   = [bgUrl].concat(imgs.map(i => i.src));
-      preloadImages(urls, startAnim);
+      // Сбор URL фонового изображения
+      var bgCss = window.getComputedStyle(document.body).backgroundImage;
+      var bgUrl = bgCss.slice(5, -2);
+      // Собираем все <img> src
+      var imgs = Array.from(document.querySelectorAll('img')).map(i => i.src);
+      // Предзагрузка и старт анимации
+      preloadImages([bgUrl].concat(imgs), startAnim);
 
-      // «Растяжка» кнопок при упоре прокрутки
+      // Реализация «растяжки» кнопок при упоре прокрутки
       var list     = document.querySelector('.bank-list');
       var buttons  = document.querySelectorAll('.btn');
       var startY   = 0;
@@ -233,7 +256,9 @@
       });
     });
 
-    // Запуск анимации «выезд снизу» для кнопок
+    /**
+     * Запуск «slideUp» анимации для всех кнопок с задержками.
+     */
     function startAnim() {
       document.querySelectorAll('.btn').forEach(function(btn, i) {
         btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';

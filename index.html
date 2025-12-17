@@ -147,143 +147,168 @@
     </button>
   </div>
 
-  <script> /* Начало блока JavaScript */
-    // Вызывает клиент Telegram и закрывает вкладку
-    function closePage() {                                              // Закрывает Mini App / вкладку (без tg://, чтобы не ловить ERR_UNKNOWN_URL_SCHEME)
-      if (window.Telegram && Telegram.WebApp) {                             // Если страница запущена именно как Telegram Mini App
-        Telegram.WebApp.close();                                            // Просим Telegram корректно закрыть Mini App
-        return;                                                             // Дальше ничего не делаем
-      }                                                                     // Конец проверки Telegram WebApp
-      window.history.back();                                                // Если это обычный браузер — возвращаемся назад по истории
-    }, 100);
-    }
+  <script>
+  // -----------------------------
+  // 1) Закрытие страницы (кнопка "← Вернуться")
+  // -----------------------------
 
-    // Открывает ссылку банка и закрывает вкладку
-    function openLink(deepLink, webUrl) {                                  // Открывает банк: пытаемся открыть приложение (deep link), иначе — веб-версию
-      var isTgWebApp = !!(window.Telegram && Telegram.WebApp);                // Признак, что мы внутри Telegram Mini App
-      var ua = navigator.userAgent || '';                                     // User-Agent для грубого определения платформы (на всякий случай)
-      var isAndroid = /Android/i.test(ua);                                    // Android?
-      var isIOS = /iPhone|iPad|iPod/i.test(ua);                               // iOS?
-
-      // ВАЖНО: Telegram Mini Apps блокируют переходы на схемы, отличные от http/https (например, alfabank://).
-      // Если сделать location.href = "alfabank://..." внутри Mini App — получишь net::ERR_UNKNOWN_URL_SCHEME.
-      // Поэтому внутри Mini App мы уходим по HTTPS на наш редирект, уже ВНЕ Telegram WebView.
-      if (isTgWebApp) {                                                       // Если мы в Telegram Mini App
-        var redirectBase = 'https://ichfliegemitdemflugzeug.github.io/Redirect/';  // !!! ЗАМЕНИ на свой домен (где лежит redirect.html). ДОЛЖЕН быть HTTPS.
-        var url = redirectBase                                                // Собираем ссылку на редирект
-          + '?dl=' + encodeURIComponent(deepLink)                             // Передаём deep link банка
-          + '&wl=' + encodeURIComponent(webUrl)                               // Передаём fallback на веб
-          + '&p=' + encodeURIComponent(isAndroid ? 'android' : (isIOS ? 'ios' : 'other')); // Передаём платформу (для диагностики)
-
-        Telegram.WebApp.openLink(url, { try_instant_view: false });           // Открываем HTTPS-ссылку (Telegram откроет её корректно)
-        setTimeout(function() { Telegram.WebApp.close(); }, 300);             // Закрываем Mini App, чтобы пользователь остался в банке/браузере
-        return;                                                               // Выходим
-      }
-
-      // Если это НЕ Telegram (обычный браузер) — можем попытаться открыть deep link напрямую.
-      tryOpenDeepLink(deepLink, webUrl);                                      // Пытаемся открыть приложение банка, иначе падаем на веб
-    } else if (isIOS && isTelegramWebView) {
-        window.open(webUrl, '_blank', 'noopener');
-      } else {
-        window.open(webUrl, '_blank');
-      }
-
-      setTimeout(function() {
-        window.close();
-      }, 200);
-    }
-
-    
-    // Пытаемся открыть deep link в обычном браузере (не в Telegram WebView) и откатываемся на webUrl.
-    function tryOpenDeepLink(deepLink, webUrl) {                              // deepLink — схема банка, webUrl — запасной HTTPS
-      var t0 = Date.now();                                                    // Запоминаем момент старта (для эвристики)
-      var fallbackTimer = null;                                               // Таймер отката на webUrl
-
-      function fallback() {                                                   // Функция отката на webUrl
-        window.location.href = webUrl;                                        // Переходим на веб-версию
-      }
-
-      fallbackTimer = setTimeout(function() {                                 // Через 1200 мс проверяем, остались ли мы на странице
-        if (!document.hidden && (Date.now() - t0) > 1100) {                   // Если страница видима — вероятно, приложение не открылось
-          fallback();                                                         // Переходим на webUrl
-        }
-      }, 1200);
-
-      document.addEventListener('visibilitychange', function() {              // Слушаем смену видимости вкладки
-        if (document.hidden && fallbackTimer) {                               // Если ушли в фон и таймер есть
-          clearTimeout(fallbackTimer);                                        // Отменяем откат на webUrl
-          fallbackTimer = null;                                               // Обнуляем переменную таймера
-        }
-      }, { once: true });                                                     // Достаточно один раз
-
-      window.location.href = deepLink;                                        // Переходим по кастомной схеме банка
-    }
+  function closePage() {                                                // Объявляем функцию закрытия страницы (вызов по кнопке "Вернуться")
+    if (window.Telegram && Telegram.WebApp) {                           // Проверяем, что страница открыта именно как Telegram Mini App (есть объект Telegram.WebApp)
+      Telegram.WebApp.close();                                          // Просим Telegram корректно закрыть Mini App (штатный способ, без tg://)
+      return;                                                           // Выходим из функции, чтобы не выполнять код ниже
+    }                                                                   // Конец проверки "мы внутри Telegram"
+    window.history.back();                                              // Если это обычный браузер (не Telegram) — возвращаемся назад по истории
+  }                                                                     // Конец функции closePage()
 
 
-    // Предзагрузка изображений
-    function preloadImages(urls, callback) {
-      var loaded = 0;
-      function onLoad() {
-        if (++loaded === urls.length) {
-          callback();
-        }
-      }
-      urls.forEach(function(url) {
-        var img = new Image();
-        img.onload  = onLoad;
-        img.onerror = onLoad;
-        img.src     = url;
-      });
-    }
+  // -----------------------------
+  // 2) Открытие банка: внутри Telegram -> через HTTPS-редирект
+  // -----------------------------
 
-    document.addEventListener('DOMContentLoaded', function() {
-      var bgCss   = window.getComputedStyle(document.body).backgroundImage;
-      var bgUrl   = bgCss.slice(5, -2);
-      var imgEls  = Array.from(document.querySelectorAll('img'));
-      var imgUrls = imgEls.map(function(img) { return img.src; });
-      var allUrls = [bgUrl].concat(imgUrls);
+  function openLink(deepLink, webUrl) {                                 // Функция: deepLink = схема приложения банка (alfabank://...), webUrl = запасной https-вход
+    var isTgWebApp = !!(window.Telegram && Telegram.WebApp);            // Логический флаг: true, если мы в Telegram Mini App (проверяем наличие Telegram.WebApp)
+    var ua = navigator.userAgent || '';                                 // Получаем User-Agent браузера/вебвью (на всякий случай, для определения платформы)
+    var isAndroid = /Android/i.test(ua);                                // Грубая проверка: Android ли устройство
+    var isIOS = /iPhone|iPad|iPod/i.test(ua);                           // Грубая проверка: iOS ли устройство
 
-      preloadImages(allUrls, startAnim);
+    if (isTgWebApp) {                                                   // Если мы внутри Telegram Mini App (то есть внутри Telegram WebView)
+      // ВАЖНО: внутри Telegram WebView нельзя надёжно открывать deepLink вида alfabank:// — будет ERR_UNKNOWN_URL_SCHEME.
+      // Поэтому мы открываем ТОЛЬКО https-страницу редиректа, уже ВНЕ логики "WebView загрузил deepLink как страницу".
+      // Редирект-страница в обычном браузере/внешнем контексте уже пытается открыть deepLink и делает fallback на webUrl.
 
-      // Реализация «растяжки» кнопок при «упоре» прокрутки (остается без изменений)
-      var list     = document.querySelector('.bank-list');
-      var buttons  = document.querySelectorAll('.btn');
-      var startY   = 0;
-      var touching = false;
+      var redirectBase = 'https://ichfliegemitdemflugzeug.github.io/Redirect/'; // БАЗОВЫЙ URL страницы редиректа (замени на свой). Должен быть HTTPS.
 
-      list.addEventListener('touchstart', function(e) {
-        touching = true;
-        startY   = e.touches[0].clientY;
-      });
-      list.addEventListener('touchmove', function(e) {
-        if (!touching) return;
-        var delta = e.touches[0].clientY - startY;
-        var scale = 1 + Math.min(Math.abs(delta) / 200, 0.1);
-        if ((list.scrollTop === 0 && delta > 0) ||
-            (list.scrollTop + list.clientHeight >= list.scrollHeight && delta < 0)) {
-          buttons.forEach(function(btn) {
-            btn.style.transform = 'scaleY(' + scale + ')';
-          });
-        }
-      });
-      list.addEventListener('touchend', function() {
-        touching = false;
-        buttons.forEach(function(btn) {
-          btn.style.transition = 'transform 0.3s';
-          btn.style.transform  = 'scaleY(1)';
-          setTimeout(function() { btn.style.transition = ''; }, 300);
-        });
-      });
-    });
+      var url = redirectBase                                             // Начинаем собирать итоговый URL для перехода на редирект-страницу
+        + '?dl=' + encodeURIComponent(deepLink)                          // Параметр dl: передаём deepLink банка в URL безопасно (кодируем)
+        + '&wl=' + encodeURIComponent(webUrl)                            // Параметр wl: передаём fallback https-ссылку банка (тоже кодируем)
+        + '&p=' + encodeURIComponent(isAndroid ? 'android' : (isIOS ? 'ios' : 'other')); // Параметр p: передаём платформу (для диагностики)
 
-    /**
-     * Запуск анимации «выезд снизу» для всех кнопок.
-     */
-    function startAnim() {
-      document.querySelectorAll('.btn').forEach(function(btn, i) {
-        btn.style.animation = 'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';
-      });
-    }
-  </script> <!-- Конец блока JavaScript -->
-</body>
-</html>
+      Telegram.WebApp.openLink(url, { try_instant_view: false });        // Открываем https-ссылку через Telegram API (Telegram сам решит, как открыть)
+      setTimeout(function () {                                           // Ставим небольшую задержку перед закрытием Mini App (чтобы переход успел начаться)
+        Telegram.WebApp.close();                                         // Закрываем Mini App, чтобы пользователь остался на стороне банка/браузера
+      }, 300);                                                           // 300 мс обычно хватает для старта перехода
+      return;                                                            // Выходим из функции, чтобы не делать попытки deepLink внутри Telegram
+    }                                                                    // Конец ветки Telegram Mini App
+
+    // Если это НЕ Telegram (обычный браузер) — можем попытаться открыть deepLink напрямую.
+    tryOpenDeepLink(deepLink, webUrl);                                   // Пытаемся открыть приложение банка по схеме, иначе откатываемся на веб-ссылку
+  }                                                                      // Конец функции openLink()
+
+
+  // -----------------------------
+  // 3) Попытка открыть приложение банка в обычном браузере (НЕ Telegram WebView)
+  // -----------------------------
+
+  function tryOpenDeepLink(deepLink, webUrl) {                           // Функция, которая пытается открыть deepLink, а если не получилось — ведёт на webUrl
+    var t0 = Date.now();                                                 // Запоминаем время старта попытки (для эвристики "не открылось")
+    var fallbackTimer = null;                                            // Переменная под таймер fallback (откат на webUrl)
+
+    function fallback() {                                                // Вложенная функция: выполняет fallback на webUrl
+      window.location.href = webUrl;                                     // Перенаправляем на веб-версию банка (https)
+    }                                                                    // Конец fallback()
+
+    fallbackTimer = setTimeout(function () {                             // Через небольшую паузу проверяем, не остались ли мы на странице
+      if (!document.hidden && (Date.now() - t0) > 1100) {                // Если страница всё ещё видима и прошло ~1.1 сек — вероятно, приложение не открылось
+        fallback();                                                      // Тогда делаем fallback на webUrl
+      }                                                                  // Конец проверки "не открылось"
+    }, 1200);                                                            // Таймаут 1.2 сек — типичная эвристика для deep link
+
+    document.addEventListener('visibilitychange', function () {          // Слушаем событие смены видимости вкладки
+      if (document.hidden && fallbackTimer) {                            // Если вкладка ушла в фон и таймер ещё активен
+        clearTimeout(fallbackTimer);                                     // Отменяем fallback (значит, приложение, вероятно, открылось)
+        fallbackTimer = null;                                            // Обнуляем переменную таймера
+      }                                                                  // Конец условия отмены таймера
+    }, { once: true });                                                  // Слушатель нужен один раз — дальше он не важен
+
+    window.location.href = deepLink;                                     // Пытаемся перейти по кастомной схеме (это сработает только в обычном браузере/контексте ОС)
+  }                                                                      // Конец функции tryOpenDeepLink()
+
+
+  // -----------------------------
+  // 4) Предзагрузка изображений + запуск анимации кнопок (как у тебя)
+  // -----------------------------
+
+  function preloadImages(urls, callback) {                               // Функция предзагрузки: ждём загрузки всех картинок, потом вызываем callback
+    var loaded = 0;                                                      // Счётчик загруженных картинок
+
+    function onLoad() {                                                  // Общий обработчик загрузки/ошибки
+      loaded++;                                                         // Увеличиваем счётчик при любом исходе (load или error)
+      if (loaded === urls.length) {                                      // Если обработали все URL
+        callback();                                                     // Запускаем функцию, которую нам передали (у тебя это startAnim)
+      }                                                                 // Конец условия "всё загружено"
+    }                                                                   // Конец onLoad()
+
+    urls.forEach(function (url) {                                       // Проходим по всем URL
+      var img = new Image();                                            // Создаём объект Image (браузер начнёт загрузку при назначении src)
+      img.onload = onLoad;                                              // При успешной загрузке — считаем как загружено
+      img.onerror = onLoad;                                             // При ошибке — тоже считаем (чтобы не зависнуть)
+      img.src = url;                                                    // Запускаем загрузку, присваивая src
+    });                                                                 // Конец forEach
+  }                                                                      // Конец preloadImages()
+
+
+  document.addEventListener('DOMContentLoaded', function () {            // Ждём, пока DOM будет готов (кнопки/картинки уже в дереве)
+    // --- Готовность Telegram WebApp (не обязательна, но полезна) ---
+    if (window.Telegram && Telegram.WebApp) {                            // Если открыто внутри Telegram
+      Telegram.WebApp.ready();                                           // Сообщаем Telegram, что приложение готово (убирает "лоадер" в некоторых клиентах)
+    }                                                                    // Конец "Telegram ready"
+
+    // --- Собираем URL всех картинок, чтобы дождаться загрузки, и потом анимировать кнопки ---
+    var bgCss = window.getComputedStyle(document.body).backgroundImage;  // Берём вычисленный background-image у body (строка вида url("..."))
+    var bgUrl = bgCss.slice(5, -2);                                      // Грубо вытаскиваем URL из строки url("...") (как у тебя)
+
+    var imgEls = Array.from(document.querySelectorAll('img'));           // Берём все теги <img> на странице (логотипы банков и шапки)
+    var imgUrls = imgEls.map(function (img) { return img.src; });        // Превращаем их в список URL, чтобы предзагрузить
+    var allUrls = [bgUrl].concat(imgUrls);                               // Склеиваем фон + все картинки в один массив
+
+    preloadImages(allUrls, startAnim);                                   // Предзагружаем все картинки, и только потом запускаем анимацию кнопок
+
+    // --- Твой эффект "растяжки" кнопок при упоре прокрутки (оставил как есть) ---
+    var list = document.querySelector('.bank-list');                     // Находим контейнер со списком банков (скроллится)
+    var buttons = document.querySelectorAll('.btn');                     // Находим все кнопки банков
+    var startY = 0;                                                      // Запоминаем Y на старте касания
+    var touching = false;                                                // Флаг "идёт касание"
+
+    list.addEventListener('touchstart', function (e) {                   // Обработчик старта касания
+      touching = true;                                                   // Отмечаем, что касание началось
+      startY = e.touches[0].clientY;                                     // Запоминаем координату Y первого пальца
+    });                                                                  // Конец touchstart
+
+    list.addEventListener('touchmove', function (e) {                    // Обработчик движения пальца
+      if (!touching) return;                                             // Если касание не активно — ничего не делаем
+      var delta = e.touches[0].clientY - startY;                         // Считаем смещение пальца по Y относительно старта
+      var scale = 1 + Math.min(Math.abs(delta) / 200, 0.1);              // Считаем коэффициент растяжки (не больше 1.1)
+
+      if (                                                                // Проверяем "упор" в верх/низ списка
+        (list.scrollTop === 0 && delta > 0) ||                            // Если мы вверху и тянем вниз
+        (list.scrollTop + list.clientHeight >= list.scrollHeight && delta < 0) // Или внизу и тянем вверх
+      ) {
+        buttons.forEach(function (btn) {                                 // Для каждой кнопки
+          btn.style.transform = 'scaleY(' + scale + ')';                 // Применяем растяжку по вертикали
+        });                                                              // Конец forEach
+      }                                                                  // Конец проверки "упор"
+    });                                                                  // Конец touchmove
+
+    list.addEventListener('touchend', function () {                      // Обработчик окончания касания
+      touching = false;                                                  // Сбрасываем флаг
+      buttons.forEach(function (btn) {                                   // Для каждой кнопки
+        btn.style.transition = 'transform 0.3s';                         // Делаем плавный возврат
+        btn.style.transform = 'scaleY(1)';                               // Возвращаем в нормальный масштаб
+        setTimeout(function () { btn.style.transition = ''; }, 300);     // Через 300 мс убираем transition, чтобы не мешал дальше
+      });                                                                // Конец forEach
+    });                                                                  // Конец touchend
+  });                                                                    // Конец DOMContentLoaded
+
+
+  // -----------------------------
+  // 5) Анимация "выезд снизу" (как у тебя)
+  // -----------------------------
+
+  function startAnim() {                                                 // Функция запуска анимации для кнопок
+    document.querySelectorAll('.btn').forEach(function (btn, i) {         // Проходим по всем кнопкам и берём индекс i
+      btn.style.animation =                                              // Назначаем CSS-анимацию каждой кнопке
+        'slideUp 0.6s ease-out both ' + (i * 0.05) + 's';                // Длительность 0.6с, задержка i*0.05с (как у тебя)
+    });                                                                  // Конец forEach
+  }                                                                      // Конец startAnim()
+</script>
+

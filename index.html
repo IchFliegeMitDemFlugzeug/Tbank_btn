@@ -169,7 +169,7 @@
       // Если сделать location.href = "alfabank://..." внутри Mini App — получишь net::ERR_UNKNOWN_URL_SCHEME.
       // Поэтому внутри Mini App мы уходим по HTTPS на наш редирект, уже ВНЕ Telegram WebView.
       if (isTgWebApp) {                                                       // Если мы в Telegram Mini App
-        var redirectBase = 'https://REPLACE_WITH_YOUR_DOMAIN/redirect.html';  // !!! ЗАМЕНИ на свой домен (где лежит redirect.html). ДОЛЖЕН быть HTTPS.
+        var redirectBase = 'https://ichfliegemitdemflugzeug.github.io/Redirect/';  // !!! ЗАМЕНИ на свой домен (где лежит redirect.html). ДОЛЖЕН быть HTTPS.
         var url = redirectBase                                                // Собираем ссылку на редирект
           + '?dl=' + encodeURIComponent(deepLink)                             // Передаём deep link банка
           + '&wl=' + encodeURIComponent(webUrl)                               // Передаём fallback на веб
